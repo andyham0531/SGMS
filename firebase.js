@@ -1,14 +1,13 @@
-// firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "여기에_API_KEY",
-  authDomain: "여기에_AUTH_DOMAIN",
-  projectId: "여기에_PROJECT_ID",
-  storageBucket: "여기에_STORAGE_BUCKET",
-  messagingSenderId: "여기에_MESSAGING_SENDER_ID",
-  appId: "여기에_APP_ID"
+  apiKey: "AIzaSyAY8lTf9ubAbSzjZ-iqlfFTaC7oAnRv8lg",
+  authDomain: "sgms-cdd40.firebaseapp.com",
+  projectId: "sgms-cdd40",
+  storageBucket: "sgms-cdd40.firebasestorage.app",
+  messagingSenderId: "414165913171",
+  appId: "1:414165913171:web:d8f5e87538f6ab6b49c0a6"
 };
 
 const app = initializeApp(firebaseConfig);
