@@ -265,6 +265,12 @@ td{
     gap:8px;
 }
 
+.reasonGroup input[type="radio"]{
+    width:auto;
+    flex-shrink:0;
+    margin-bottom:0;
+}
+
 .customFields{
     display:flex;
     flex-direction:column;
