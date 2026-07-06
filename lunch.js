@@ -1,5 +1,6 @@
 // lunch.js
 import { db } from "./firebase.js";
+import { studentsData } from "./students-data.js";
 import {
   collection,
   doc,
@@ -146,6 +147,14 @@ studentIdInput.addEventListener("keydown", (e) => {
 });
 studentNameInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") saveBtn.click();
+});
+
+// 학번 입력 시 명렬표에서 이름 자동완성
+studentIdInput.addEventListener("input", () => {
+  const sid = studentIdInput.value.trim();
+  if (studentsData[sid]) {
+    studentNameInput.value = studentsData[sid];
+  }
 });
 
 // 개별 삭제
