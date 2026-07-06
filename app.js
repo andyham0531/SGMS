@@ -34,9 +34,28 @@ onSnapshot(studentsCol, (snapshot) => {
       <td>${data.studentId}</td>
       <td>${data.studentName}</td>
       <td>${data.count}</td>
+      <td><button class="deleteOneBtn" data-id="${data.studentId}">삭제</button></td>
     `;
     studentTable.appendChild(tr);
   });
+});
+
+// 개별 삭제 (표 안의 삭제 버튼 클릭 시)
+studentTable.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("deleteOneBtn")) return;
+
+  const studentId = e.target.dataset.id;
+  const confirmDelete = confirm(`학번 ${studentId} 학생을 삭제하시겠습니까?`);
+  if (!confirmDelete) return;
+
+  e.target.disabled = true;
+  try {
+    await deleteDoc(doc(db, "students", studentId));
+  } catch (err) {
+    console.error(err);
+    alert("삭제 중 오류가 발생했습니다. 콘솔을 확인해주세요.");
+    e.target.disabled = false;
+  }
 });
 
 // 등록 버튼: 이미 등록된 학번이면 횟수 +1, 없으면 새로 등록
