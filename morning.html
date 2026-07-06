@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGMS - 아침선도</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script type="module" src="morning.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="index.html" class="backLink">← 처음으로</a>
+
+<h1>아침선도</h1>
+
+<div class="card">
+
+<input
+id="studentId"
+placeholder="학번 입력">
+
+<input
+id="studentName"
+placeholder="이름 입력">
+
+<div class="reasonGroup">
+
+<label>
+<input type="radio" name="reason" value="정복미착용" data-score="1" checked>
+정복미착용 (1점)
+</label>
+
+<label>
+<input type="radio" name="reason" value="사복착용" data-score="2">
+사복착용 (2점)
+</label>
+
+<label>
+<input type="radio" name="reason" value="기타" data-score="0">
+기타 (직접입력)
+</label>
+
+</div>
+
+<div id="customFields" class="customFields hidden">
+
+<input id="customReason" placeholder="사유 직접 입력">
+
+<input id="customScore" type="number" min="0" placeholder="점수 입력">
+
+</div>
+
+<button id="saveBtn">
+등록
+</button>
+
+</div>
+
+<div class="countBox">
+
+<h3>기록 목록</h3>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>학번</th>
+
+<th>이름</th>
+
+<th>사유</th>
+
+<th>점수</th>
+
+</tr>
+
+</thead>
+
+<tbody id="recordTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="bottom">
+
+<button id="deleteAll">
+전체 삭제
+</button>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGMS - 급식선도</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script type="module" src="lunch.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="index.html" class="backLink">← 처음으로</a>
+
+<h1>급식선도</h1>
+
+<div class="card">
+
+<input
+id="studentId"
+placeholder="학번 입력">
+
+<input
+id="studentName"
+placeholder="이름 입력">
+
+<button id="saveBtn">
+등록
+</button>
+
+</div>
+
+<div class="countBox">
+
+<h3>학생 목록</h3>
+
+<div id="floatingAdjust" class="floatingAdjust hidden">
+  <span id="floatingName" class="floatingName"></span>
+  <button id="floatingMinus" class="circleBtn minusCircle">－</button>
+  <button id="floatingPlus" class="circleBtn plusCircle">＋</button>
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th></th>
+
+<th>학번</th>
+
+<th>이름</th>
+
+<th>횟수</th>
+
+<th>벌점</th>
+
+<th>삭제</th>
+
+</tr>
+
+</thead>
+
+<tbody id="studentTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="bottom">
+
+<button id="deleteAll">
+전체 삭제
+</button>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
