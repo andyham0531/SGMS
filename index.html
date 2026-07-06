@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGMS</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script type="module" src="app.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>SGMS</h1>
+<p>선도부 관리 시스템</p>
+
+<div class="card">
+
+<input
+id="studentId"
+placeholder="학번 입력">
+
+<input
+id="studentName"
+placeholder="이름 입력">
+
+<button id="saveBtn">
+등록
+</button>
+
+</div>
+
+<div class="countBox">
+
+<h3>학생 목록</h3>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>학번</th>
+
+<th>이름</th>
+
+<th>횟수</th>
+
+</tr>
+
+</thead>
+
+<tbody id="studentTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="bottom">
+
+<button id="deleteAll">
+전체 삭제
+</button>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
