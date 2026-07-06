@@ -103,3 +103,11 @@ td{
     color:#ff3b30;
     font-weight:bold;
 }
+
+.deleteOneBtn{
+    width:auto;
+    padding:6px 12px;
+    font-size:13px;
+    background:#ff3b30;
+    border-radius:8px;
+}
