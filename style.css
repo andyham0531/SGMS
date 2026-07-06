@@ -91,4 +91,186 @@ td{
     border-bottom:1px solid #eee;
 }
 
-.b
+.bottom{
+    margin-top:20px;
+}
+
+#deleteAll{
+    background:#ff3b30;
+}
+
+.warning{
+    color:#ff3b30;
+    font-weight:bold;
+}
+
+.deleteOneBtn{
+    width:auto;
+    padding:6px 12px;
+    font-size:13px;
+    background:#ff3b30;
+    border-radius:8px;
+}
+
+.madeBy{
+    text-align:center;
+    margin-bottom:12px;
+}
+
+.madeBy span{
+    display:inline-block;
+    background:#007AFF;
+    color:white;
+    font-size:14px;
+    font-weight:700;
+    padding:6px 16px;
+    border-radius:999px;
+}
+
+.penaltyCell{
+    color:#ff3b30;
+    font-weight:700;
+}
+
+.adjustCell{
+    display:flex;
+    gap:6px;
+    justify-content:center;
+}
+
+.adjustBtn{
+    width:auto;
+    padding:6px 12px;
+    font-size:15px;
+    font-weight:700;
+    border-radius:8px;
+}
+
+.minusBtn{
+    background:#8e8e93;
+}
+
+.plusBtn{
+    background:#34c759;
+}
+
+/* 시작 화면 메뉴 */
+.menuBox{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-top:10px;
+}
+
+.menuBtn{
+    display:block;
+    text-align:center;
+    padding:22px;
+    border-radius:18px;
+    font-size:20px;
+    font-weight:700;
+    color:white;
+    text-decoration:none;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.lunchBtn{
+    background:#007AFF;
+}
+
+.morningBtn{
+    background:#ff9500;
+}
+
+/* 각 페이지 상단 처음으로 가기 링크 */
+.backLink{
+    display:inline-block;
+    margin-bottom:12px;
+    color:#007AFF;
+    text-decoration:none;
+    font-weight:600;
+}
+
+/* 급식선도: 선택 체크박스 (동그랗게) */
+.selectCheck{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    accent-color:#007AFF;
+}
+
+/* 급식선도: 학생 선택 시 뜨는 플로팅 조정 패널 */
+.floatingAdjust{
+    position:absolute;
+    top:16px;
+    right:16px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:#f4f4f4;
+    padding:6px 10px;
+    border-radius:999px;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+.floatingAdjust.hidden{
+    display:none;
+}
+
+.floatingName{
+    font-size:12px;
+    color:#333;
+    font-weight:600;
+    max-width:100px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.circleBtn{
+    width:28px;
+    height:28px;
+    padding:0;
+    border-radius:50%;
+    font-size:14px;
+    font-weight:700;
+    line-height:1;
+}
+
+.minusCircle{
+    background:#8e8e93;
+}
+
+.plusCircle{
+    background:#34c759;
+}
+
+.countBox{
+    position:relative;
+}
+
+/* 아침선도: 사유 선택 라디오 그룹 */
+.reasonGroup{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:12px;
+    font-size:14px;
+    color:#333;
+}
+
+.reasonGroup label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.customFields{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.customFields.hidden{
+    display:none;
+}
