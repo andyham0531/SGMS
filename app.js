@@ -30,10 +30,12 @@ onSnapshot(studentsCol, (snapshot) => {
 
   students.forEach((data) => {
     const tr = document.createElement("tr");
+    const penalty = Math.floor((data.count || 0) / 3);
     tr.innerHTML = `
       <td>${data.studentId}</td>
       <td>${data.studentName}</td>
       <td>${data.count}</td>
+      <td class="${penalty > 0 ? "penaltyCell" : ""}">${penalty > 0 ? `벌점 ${penalty}점` : "-"}</td>
       <td><button class="deleteOneBtn" data-id="${data.studentId}">삭제</button></td>
     `;
     studentTable.appendChild(tr);
