@@ -52,10 +52,18 @@ onSnapshot(studentsCol, (snapshot) => {
     tr.innerHTML = `
       <td><input type="checkbox" class="selectCheck" data-id="${data.studentId}" data-name="${data.studentName}" ${isSelected ? "checked" : ""}></td>
       <td>${data.studentId}</td>
-      <td>${data.studentName}</td>
-      <td>${data.count}</td>
-      <td class="${penalty > 0 ? "penaltyCell" : ""}">${penalty > 0 ? `벌점 ${penalty}점` : "-"}</td>
-      <td><button class="deleteOneBtn" data-id="${data.studentId}">삭제</button></td>
+<td>${data.studentName}</td>
+<td>${data.count}</td>
+<td class="${penalty > 0 ? "penaltyCell" : ""}">
+    ${penalty > 0 ? `벌점 ${penalty}점` : "-"}
+</td>
+<td>
+    ${
+      penalty > 0
+        ? `<button class="deleteOneBtn processBtn" data-id="${data.studentId}">부여</button>`
+        : "-"
+    }
+</td>
     `;
     studentTable.appendChild(tr);
   });
@@ -157,25 +165,36 @@ studentIdInput.addEventListener("input", () => {
   }
 });
 
-// 개별 삭제
+// 벌점 부여
 studentTable.addEventListener("click", async (e) => {
-  if (!e.target.classList.contains("deleteOneBtn")) return;
+  if (!e.target.classList.contains("processBtn")) return;
 
   const studentId = e.target.dataset.id;
-  const confirmDelete = confirm(`학번 ${studentId} 학생을 삭제하시겠습니까?`);
-  if (!confirmDelete) return;
 
-  e.target.disabled = true;
-  try {
-    await deleteDoc(doc(db, "students", studentId));
-    if (selectedStudentId === studentId) selectedStudentId = null;
-  } catch (err) {
-    console.error(err);
-    alert("삭제 중 오류가 발생했습니다. 콘솔을 확인해주세요.");
-    e.target.disabled = false;
-  }
+  const studentRef = doc(db, "students", studentId);
+  const studentSnap = await getDoc(studentRef);
+
+  if (!studentSnap.exists()) return;
+
+  const currentCount = studentSnap.data().count || 0;
+  const penalty = Math.floor(currentCount / 3);
+
+  if (penalty === 0) return;
+
+  const remain = currentCount % 3;
+
+  const ok = confirm(
+    `${studentSnap.data().studentName} 학생에게 벌점 ${penalty}점을 부여하시겠습니까?\n\n처리 후 남는 횟수 : ${remain}회`
+  );
+
+  if (!ok) return;
+
+  await updateDoc(studentRef, {
+    count: remain
+  });
+
+  alert("벌점이 부여되었습니다.");
 });
-
 // 전체 삭제 (비밀번호 확인 필요)
 const DELETE_PASSWORD = "0531";
 
