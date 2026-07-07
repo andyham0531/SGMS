@@ -176,8 +176,17 @@ studentTable.addEventListener("click", async (e) => {
   }
 });
 
-// 전체 삭제
+// 전체 삭제 (비밀번호 확인 필요)
+const DELETE_PASSWORD = "0531";
+
 deleteAllBtn.addEventListener("click", async () => {
+  const inputPw = prompt("전체 삭제 비밀번호를 입력하세요.");
+  if (inputPw === null) return;
+  if (inputPw !== DELETE_PASSWORD) {
+    alert("비밀번호가 틀렸습니다.");
+    return;
+  }
+
   const confirmDelete = confirm("전체 학생 목록을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.");
   if (!confirmDelete) return;
 
