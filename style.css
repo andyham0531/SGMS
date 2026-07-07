@@ -13,6 +13,7 @@ body{
     max-width:500px;
     margin:30px auto;
     padding:20px;
+    position:relative;
 }
 
 h1{
@@ -158,6 +159,7 @@ td{
 .menuBox{
     display:flex;
     flex-direction:column;
+    align-items:center;
     gap:14px;
     margin-top:10px;
 }
@@ -180,6 +182,39 @@ td{
 
 .morningBtn{
     background:#ff9500;
+}
+
+.checkBtn{
+    background:#8e8e93;
+}
+
+/* 시작화면 좌측 상단 선도부 전용 링크 (눈에 안 띄게) */
+.staffLinks{
+    position:absolute;
+    top:16px;
+    left:16px;
+    display:flex;
+    gap:10px;
+}
+
+.staffLinks a{
+    font-size:11px;
+    color:#c7c7cc;
+    text-decoration:none;
+}
+
+/* 시작화면 벌점조회 버튼 (작게, 중앙) */
+.checkSmallBtn{
+    display:inline-block;
+    margin:0 auto;
+    padding:10px 24px;
+    background:#007AFF;
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    border-radius:12px;
+    text-decoration:none;
+    text-align:center;
 }
 
 /* 각 페이지 상단 처음으로 가기 링크 */
@@ -279,4 +314,31 @@ td{
 
 .customFields.hidden{
     display:none;
+}
+
+.hidden{
+    display:none;
+}
+
+/* 벌점 조회 결과 */
+.resultRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+}
+
+.resultRow:last-child{
+    border-bottom:none;
+}
+
+.resultLabel{
+    color:#666;
+    font-size:15px;
+}
+
+.resultValue{
+    font-size:18px;
+    font-weight:700;
 }
