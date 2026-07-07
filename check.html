@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGMS - 내 벌점 조회</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script type="module" src="check.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>내 벌점 조회</h1>
+<p>학번을 입력하면 급식선도 기록을 볼 수 있어요</p>
+
+<div class="card">
+
+<input
+id="studentId"
+placeholder="학번 입력"
+inputmode="numeric">
+
+<button id="checkBtn">
+조회
+</button>
+
+</div>
+
+<div id="resultBox" class="countBox hidden">
+
+<h3 id="resultName"></h3>
+
+<div class="resultRow">
+<span class="resultLabel">횟수</span>
+<span id="resultCount" class="resultValue"></span>
+</div>
+
+<div class="resultRow">
+<span class="resultLabel">벌점</span>
+<span id="resultPenalty" class="resultValue penaltyCell"></span>
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
