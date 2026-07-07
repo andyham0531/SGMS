@@ -166,6 +166,7 @@ td{
 
 .menuBtn{
     display:block;
+    width:100%;
     text-align:center;
     padding:22px;
     border-radius:18px;
@@ -205,16 +206,16 @@ td{
 
 /* 시작화면 벌점조회 버튼 (작게, 중앙) */
 .checkSmallBtn{
-    display:inline-block;
-    margin:0 auto;
-    padding:10px 24px;
-    background:#007AFF;
-    color:white;
-    font-size:15px;
-    font-weight:600;
-    border-radius:12px;
+    position:absolute;
+    top:20px;
+    left:20px;
+    color:#8e8e93;
+    font-size:12px;
     text-decoration:none;
-    text-align:center;
+    font-weight:600;
+    background:none;
+    padding:0;
+    border-radius:0;
 }
 
 /* 각 페이지 상단 처음으로 가기 링크 */
