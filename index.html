@@ -1,3 +1,4 @@
+cat > /home/claude/index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,23 +14,23 @@
 
 <div class="container">
 
-<div class="staffLinks">
-<a href="lunch.html">급식선도</a>
-<a href="morning.html">아침선도</a>
-</div>
-
 <h1>SGMS</h1>
 <p class="madeBy"><span>Made by 서울미고 함석민</span></p>
 <p>선도부 관리 시스템</p>
 
 <div class="menuBox">
 
-<a href="check.html" class="checkSmallBtn">내 벌점 조회</a>
+<a href="lunch.html" class="menuBtn lunchBtn">급식선도</a>
+
+<a href="morning.html" class="menuBtn morningBtn">아침선도</a>
 
 </div>
+
+<a href="check.html" class="checkSmallBtn">내 벌점 조회</a>
 
 </div>
 
 </body>
 
 </html>
+EOF
