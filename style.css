@@ -431,3 +431,16 @@ td{
     text-decoration:none;
     font-weight:600;
 }
+.umbrellaBtn{
+    background:#5856d6;
+}
+
+.umbrellaSmallBtn{
+    position:absolute;
+    top:20px;
+    right:20px;
+    color:#8e8e93;
+    font-size:12px;
+    text-decoration:none;
+    font-weight:600;
+}
