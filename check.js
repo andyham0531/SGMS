@@ -1,79 +1,55 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SGMS - 내 벌점 조회</title>
+// check.js
+import { db } from "./firebase.js";
+import { studentsData } from "./students-data.js";
+import {
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-<link rel="stylesheet" href="style.css">
+const studentIdInput = document.getElementById("studentId");
+const checkBtn = document.getElementById("checkBtn");
+const resultBox = document.getElementById("resultBox");
+const resultName = document.getElementById("resultName");
+const resultCount = document.getElementById("resultCount");
+const resultPenalty = document.getElementById("resultPenalty");
 
-<script type="module" src="check.js"></script>
+async function checkStudent() {
+  const studentId = studentIdInput.value.trim();
 
-</head>
+  if (!studentId) {
+    alert("학번을 입력해주세요.");
+    return;
+  }
 
-<body>
+  checkBtn.disabled = true;
+  try {
+    const studentRef = doc(db, "students", studentId);
+    const studentSnap = await getDoc(studentRef);
 
-<div class="container">
+    const name = studentsData[studentId] || (studentSnap.exists() ? studentSnap.data().studentName : null);
 
-<h1>내 벌점 조회</h1>
-<p>학번을 입력하면 급식선도 기록을 볼 수 있어요</p>
+    if (!name) {
+      alert("명렬표에서 해당 학번을 찾을 수 없습니다. 학번을 다시 확인해주세요.");
+      resultBox.classList.add("hidden");
+      return;
+    }
 
-<div class="card">
+    const count = studentSnap.exists() ? (studentSnap.data().count || 0) : 0;
+    const penalty = Math.floor(count / 3) * 2;
 
-<input
-id="studentId"
-placeholder="학번 입력"
-inputmode="numeric">
+    resultName.textContent = `${name} (${studentId})`;
+    resultCount.textContent = `${count}회`;
+    resultPenalty.textContent = penalty > 0 ? `${penalty}점` : "0점 (양호)";
+    resultBox.classList.remove("hidden");
+  } catch (err) {
+    console.error(err);
+    alert("조회 중 오류가 발생했습니다. 콘솔을 확인해주세요.");
+  } finally {
+    checkBtn.disabled = false;
+  }
+}
 
-<button id="checkBtn">
-조회
-</button>
-
-</div>
-
-<div id="resultBox" class="countBox hidden">
-
-<h3 id="resultName"></h3>
-
-<div class="resultRow">
-<span class="resultLabel">횟수</span>
-<span id="resultCount" class="resultValue"></span>
-</div>
-
-<div class="resultRow">
-<span class="resultLabel">벌점</span>
-<span id="resultPenalty" class="resultValue penaltyCell"></span>
-</div>
-
-</div>
-
-<div class="rulesBox">
-
-<h3>벌점 기준 안내</h3>
-
-<details class="ruleGroup">
-<summary>🚨 규정 외 복장 착용 <span class="ruleScore">-2점</span></summary>
-<ul>
-<li>
-이너웨어 단독 착용: 교복이나 체육복 없이 안에 입는 내의/티셔츠만 단독으로 입고 다니는 경우
-<span class="ruleNote">(※ 실기복 반팔 위에 사복 후드티 레이어드는 허용)</span>
-</li>
-<li>신발 위반: 실내외에서 슬리퍼 및 크록스를 착용하는 경우</li>
-<li>사복 착용: 학교가 지정하지 않은 개인 사복을 무단 착용하는 경우</li>
-</ul>
-</details>
-
-<details class="ruleGroup">
-<summary>✂️ 교복 변형 <span class="ruleScore">-2점</span></summary>
-<ul>
-<li>바지 길이 위반: 학교 지정 체육복 바지 및 실기복 바지를 임의로 줄여 로고 아래 <span class="ruleTodo">[기준 측정 예정]</span> 을 초과한 경우</li>
-</ul>
-</details>
-
-</div>
-
-</div>
-
-</body>
-
-</html>
+checkBtn.addEventListener("click", checkStudent);
+studentIdInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") checkStudent();
+});
