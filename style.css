@@ -133,6 +133,16 @@ td{
     font-weight:700;
 }
 
+.processPenaltyBtn{
+    width:auto;
+    padding:4px 10px;
+    font-size:11px;
+    font-weight:600;
+    background:#ff9500;
+    border-radius:6px;
+    margin-left:4px;
+}
+
 .adjustCell{
     display:flex;
     gap:6px;
@@ -342,4 +352,73 @@ td{
 .resultValue{
     font-size:18px;
     font-weight:700;
+}
+
+/* 벌점 기준 안내 */
+.rulesBox{
+    background:white;
+    margin-top:20px;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.rulesBox h3{
+    margin-bottom:12px;
+}
+
+.ruleGroup{
+    border-top:1px solid #eee;
+    padding:10px 0;
+}
+
+.ruleGroup:first-of-type{
+    border-top:none;
+}
+
+.ruleGroup summary{
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.ruleGroup summary::-webkit-details-marker{
+    display:none;
+}
+
+.ruleScore{
+    color:#ff3b30;
+    font-weight:700;
+    font-size:13px;
+    background:#fdecea;
+    padding:2px 8px;
+    border-radius:8px;
+}
+
+.ruleGroup ul{
+    margin-top:10px;
+    padding-left:18px;
+}
+
+.ruleGroup li{
+    font-size:13px;
+    color:#444;
+    line-height:1.5;
+    margin-bottom:8px;
+}
+
+.ruleNote{
+    display:block;
+    color:#999;
+    font-size:12px;
+    margin-top:2px;
+}
+
+.ruleTodo{
+    color:#ff9500;
+    font-weight:600;
 }
