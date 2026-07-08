@@ -3,179 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>다원 우산대여 - 관리자</title>
-<style>
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Malgun Gothic', sans-serif;
-    background: #eef3f9;
-    margin: 0;
-    padding: 16px;
-    color: #1b2a4a;
-  }
-  h1 {
-    font-size: 22px;
-    text-align: center;
-    margin-bottom: 4px;
-  }
-  .sub {
-    text-align: center;
-    color: #5a6b8c;
-    font-size: 13px;
-    margin-bottom: 20px;
-  }
-  .manager-select {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-  .manager-select button {
-    padding: 8px 14px;
-    border-radius: 20px;
-    border: 2px solid #3b5998;
-    background: white;
-    color: #3b5998;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .manager-select button.active {
-    background: #3b5998;
-    color: white;
-  }
-  .overdue-box {
-    background: #fff0f0;
-    border: 2px solid #e05a5a;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 20px;
-    display: none;
-  }
-  .overdue-box.show { display: block; }
-  .overdue-box h2 {
-    font-size: 15px;
-    color: #c62828;
-    margin: 0 0 8px 0;
-  }
-  .overdue-item {
-    background: white;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-  }
-  .overdue-item button {
-    background: #ffd400;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-  .card {
-    border-radius: 12px;
-    padding: 14px 8px;
-    text-align: center;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  .card .num { font-size: 22px; }
-  .card .status { font-size: 11px; margin-top: 4px; }
-  .card.available { background: #4caf50; }
-  .card.rented { background: #ffa726; }
-  .card.overdue { background: #e05a5a; }
-  .card.lost { background: #757575; }
-
-  .modal-bg {
-    display: none;
-    position: fixed;
-    top:0; left:0; right:0; bottom:0;
-    background: rgba(0,0,0,0.5);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal-bg.show { display: flex; }
-  .modal {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
-    width: 90%;
-    max-width: 380px;
-    max-height: 85vh;
-    overflow-y: auto;
-  }
-  .modal h3 { margin-top: 0; }
-  .modal label { font-size: 13px; color: #556; display:block; margin-top: 10px; }
-  .modal input, .modal select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-top: 4px;
-    font-size: 14px;
-  }
-  .autocomplete-list {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    max-height: 140px;
-    overflow-y: auto;
-    background: white;
-    display: none;
-  }
-  .autocomplete-list div {
-    padding: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    border-bottom: 1px solid #eee;
-  }
-  .autocomplete-list div:hover { background: #f0f4ff; }
-  .modal-btns {
-    display: flex;
-    gap: 8px;
-    margin-top: 16px;
-  }
-  .modal-btns button {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .btn-primary { background: #3b5998; color: white; }
-  .btn-danger { background: #e05a5a; color: white; }
-  .btn-gray { background: #ddd; color: #333; }
-  .photo-preview {
-    width: 100%;
-    margin-top: 8px;
-    border-radius: 8px;
-    display: none;
-  }
-  .photo-preview.show { display: block; }
-  .close-x {
-    float: right;
-    font-size: 20px;
-    cursor: pointer;
-    color: #888;
-  }
-</style>
+<title>SGMS - 우산관리</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>☂️ 다원 우산대여 관리</h1>
-<div class="sub">학생회 담당자 전용 페이지</div>
+<div class="container">
 
+<a href="index.html" class="backLink">← 처음으로</a>
+
+<h1>우산관리</h1>
+
+<p>우산 대여 및 반납 관리</p>
 <div class="manager-select">
   <button data-name="박나은">박나은</button>
   <button data-name="백승주">백승주</button>
@@ -207,12 +46,7 @@
 </div>
 
 <!-- 반납/분실 모달 -->
-<div class="modal-bg" id="returnModalBg">
-  <div class="modal">
-    <span class="close-x" onclick="closeModal('returnModalBg')">×</span>
-    <h3 id="returnModalTitle">우산 반납</h3>
-    <div id="returnInfo" style="font-size:13px; color:#556; margin-bottom:8px;"></div>
-    <label>반납 사진 촬영/첨부</label>
+>반납 사진 촬영/첨부</label>
     <input type="file" id="returnPhoto" accept="image/*" capture="environment">
     <img id="photoPreview" class="photo-preview">
     <div class="modal-btns">
@@ -222,10 +56,9 @@
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<script src="students-data.js"></script>
-<script src="umbrella_admin.js"></script>
+<script type="module" src="umbrella_admin.js"></script>
+
+</div>
+
 </body>
 </html>
