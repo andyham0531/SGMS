@@ -435,3 +435,106 @@ td{
     background:#5856d6;
 }
 
+/* ===== 우산관리 ===== */
+
+.umbrellaGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:15px;
+}
+
+.umbrellaCard{
+    border-radius:16px;
+    padding:18px 10px;
+    text-align:center;
+    color:white;
+    cursor:pointer;
+    font-weight:700;
+    transition:.2s;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.umbrellaCard:hover{
+    transform:scale(.98);
+}
+
+.umbrellaNumber{
+    font-size:22px;
+    margin-bottom:6px;
+}
+
+.umbrellaState{
+    font-size:13px;
+}
+
+.available{
+    background:#34c759;
+}
+
+.rented{
+    background:#ff9500;
+}
+
+.overdue{
+    background:#ff3b30;
+}
+
+.lost{
+    background:#8e8e93;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+
+.modal.hidden{
+    display:none;
+}
+
+.modalCard{
+    width:90%;
+    max-width:380px;
+    background:white;
+    border-radius:18px;
+    padding:20px;
+}
+
+.modalButtons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.modalButtons button{
+    flex:1;
+}
+
+#managerSelect{
+    width:100%;
+    padding:14px;
+    border:none;
+    background:#f4f4f4;
+    border-radius:12px;
+    font-size:16px;
+}
+
+#overdueList{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.overdueItem{
+    padding:12px;
+    background:#fff3f3;
+    border-left:5px solid #ff3b30;
+    border-radius:10px;
+    font-size:14px;
+}
