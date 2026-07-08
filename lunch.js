@@ -39,14 +39,13 @@ function updateFloatingPanel() {
 onSnapshot(studentsCol, (snapshot) => {
   studentTable.innerHTML = "";
 
-  // 횟수 많은 순으로 정렬해서 보여주기
   const students = snapshot.docs
     .map((docSnap) => docSnap.data())
     .sort((a, b) => (b.count || 0) - (a.count || 0));
 
   students.forEach((data) => {
     const tr = document.createElement("tr");
-    const penalty = Math.floor((data.count || 0) / 3);
+    const penalty = Math.floor((data.count || 0) / 3) * 2;
     const isSelected = data.studentId === selectedStudentId;
 
     tr.innerHTML = `
@@ -68,7 +67,6 @@ onSnapshot(studentsCol, (snapshot) => {
     studentTable.appendChild(tr);
   });
 
-  // 선택된 학생이 삭제되어 목록에 없으면 선택 해제
   if (selectedStudentId && !students.some((s) => s.studentId === selectedStudentId)) {
     selectedStudentId = null;
   }
@@ -95,7 +93,6 @@ studentTable.addEventListener("change", (e) => {
   updateFloatingPanel();
 });
 
-// 플로팅 패널의 -/+ 버튼: 선택된 학생의 횟수 조정
 async function adjustSelected(delta) {
   if (!selectedStudentId) return;
   const studentRef = doc(db, "students", selectedStudentId);
@@ -109,7 +106,6 @@ async function adjustSelected(delta) {
 floatingMinus.addEventListener("click", () => adjustSelected(-1));
 floatingPlus.addEventListener("click", () => adjustSelected(1));
 
-// 등록 버튼: 이미 등록된 학번이면 횟수 +1, 없으면 새로 등록
 saveBtn.addEventListener("click", async () => {
   const studentId = studentIdInput.value.trim();
   const studentName = studentNameInput.value.trim();
@@ -157,7 +153,6 @@ studentNameInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") saveBtn.click();
 });
 
-// 학번 입력 시 명렬표에서 이름 자동완성
 studentIdInput.addEventListener("input", () => {
   const sid = studentIdInput.value.trim();
   if (studentsData[sid]) {
@@ -177,7 +172,7 @@ studentTable.addEventListener("click", async (e) => {
   if (!studentSnap.exists()) return;
 
   const currentCount = studentSnap.data().count || 0;
-  const penalty = Math.floor(currentCount / 3);
+  const penalty = Math.floor(currentCount / 3) * 2;
 
   if (penalty === 0) return;
 
@@ -195,6 +190,7 @@ studentTable.addEventListener("click", async (e) => {
 
   alert("벌점이 부여되었습니다.");
 });
+
 // 전체 삭제 (비밀번호 확인 필요)
 const DELETE_PASSWORD = "0531";
 
