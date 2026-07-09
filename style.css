@@ -550,3 +550,44 @@ td{
     background:#ff9500;
     border-radius:8px;
 }
+
+/* ===== 우산 대여 이력 표 ===== */
+.recordsContainer{
+    max-width:700px;
+}
+
+.tableScroll{
+    overflow-x:auto;
+    margin-top:15px;
+    background:white;
+    border-radius:18px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.recordsTable{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+    white-space:nowrap;
+}
+
+.recordsTable th{
+    padding:10px 8px;
+    background:#5856d6;
+    color:white;
+    font-size:11px;
+}
+
+.recordsTable td{
+    padding:10px 8px;
+    text-align:center;
+    border-bottom:1px solid #eee;
+}
+
+.signatureThumb{
+    width:60px;
+    height:auto;
+    border:1px solid #eee;
+    border-radius:4px;
+    background:white;
+}
