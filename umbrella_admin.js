@@ -57,13 +57,6 @@ managerSelect.addEventListener("change", () => {
   currentManager = managerSelect.value;
 });
 
-studentIdInput.addEventListener("input", () => {
-  const id = studentIdInput.value.trim();
-  if (studentsData[id]) {
-    studentNameInput.value = studentsData[id];
-  }
-});
-
 closeRentBtn.addEventListener("click", () => rentModal.classList.add("hidden"));
 closeReturnBtn.addEventListener("click", () => returnModal.classList.add("hidden"));
 
@@ -274,6 +267,21 @@ async function submitRent() {
 
   if (!studentId || !studentName) {
     alert("학번과 이름을 입력해주세요.");
+    return;
+  }
+
+  // 학번+이름이 명렬표와 정확히 일치해야 진행 가능
+  if (studentsData[studentId] !== studentName) {
+    alert("학번과 이름이 명렬표와 일치하지 않습니다. 다시 확인해주세요.");
+    return;
+  }
+
+  // 이미 다른 우산을 대여 중인지 확인
+  const alreadyRenting = Object.entries(umbrellaData).find(
+    ([num, d]) => d.status === "대여중" && d.studentId === studentId
+  );
+  if (alreadyRenting) {
+    alert(`이미 ${alreadyRenting[0]}번 우산을 대여 중입니다. 한 번에 하나만 빌릴 수 있어요.`);
     return;
   }
 
