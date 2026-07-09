@@ -673,6 +673,19 @@ td{
     margin-top:8px;
 }
 
+.smsBtn{
+    display:block;
+    text-align:center;
+    padding:15px;
+    margin-top:8px;
+    border-radius:14px;
+    background:#34c759;
+    color:white;
+    font-size:17px;
+    font-weight:600;
+    text-decoration:none;
+}
+
 .topGapBtn{
     margin-top:10px;
 }
