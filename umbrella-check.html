@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SGMS - 우산 조회</title>
+<title>SGMS - 우산 대여/반납</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -17,8 +17,8 @@
 
 <a href="index.html" class="backLink">← 처음으로</a>
 
-<h1>우산 조회</h1>
-<p>학번을 입력하면 대여 현황을 볼 수 있어요</p>
+<h1>우산 대여/반납</h1>
+<p>학번을 입력하고 조회하면 대여하거나 반납할 수 있어요</p>
 
 <div class="card">
 
@@ -27,32 +27,56 @@ id="studentId"
 placeholder="학번 입력"
 inputmode="numeric">
 
+<input
+id="studentName"
+placeholder="이름 입력">
+
 <button id="checkBtn">
 조회
 </button>
 
 </div>
 
-<div id="resultBox" class="countBox hidden">
+<!-- 현재 대여중일 때: 반납 영역 -->
+<div id="returnBox" class="countBox hidden">
 
-<h3 id="resultTitle"></h3>
+<h3 id="returnTitle"></h3>
 
 <div class="resultRow">
 <span class="resultLabel">우산 번호</span>
-<span id="resultNumber" class="resultValue"></span>
+<span id="returnNumber" class="resultValue"></span>
 </div>
 
 <div class="resultRow">
 <span class="resultLabel">대여일</span>
-<span id="resultDate" class="resultValue"></span>
+<span id="returnDate" class="resultValue"></span>
 </div>
 
 <div class="resultRow">
 <span class="resultLabel">경과일</span>
-<span id="resultDays" class="resultValue"></span>
+<span id="returnDays" class="resultValue"></span>
 </div>
 
+<label style="font-size:13px;color:#666;">서명</label>
+
+<canvas id="signaturePad" width="300" height="120" style="border:1px solid #ddd;border-radius:12px;width:100%;touch-action:none;background:white;"></canvas>
+
+<button id="clearSignature" style="background:#8e8e93;margin-top:8px;">서명 지우기</button>
+
+<button id="doReturnBtn" style="margin-top:10px;">우산 반납하기</button>
+
 </div>
+
+<!-- 대여중이 아닐 때: 대여 가능 목록 -->
+<div id="rentBox" class="countBox hidden">
+
+<h3>대여 가능한 우산</h3>
+
+<div id="availableList" class="umbrellaGrid"></div>
+
+</div>
+
+<p id="banMsg" class="warning hidden" style="margin-top:16px;"></p>
 
 </div>
 
