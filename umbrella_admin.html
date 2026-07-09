@@ -67,6 +67,19 @@ placeholder="학번 입력">
 id="studentName"
 placeholder="이름">
 
+<div class="termsBox">
+📋 대여 전 확인사항<br>
+• 3일 이상 연체 시 <b>1개월간 대여가 제한</b>됩니다.<br>
+• 분실 시 <b>벌금 5,000원</b>이 부과됩니다.<br>
+• 반납할 때 우산 <b>손잡이에 적힌 번호</b>를 꼭 확인하고, 빌린 그 우산을 반납해주세요.
+</div>
+
+<label style="font-size:13px;color:#666;">서명 (위 내용에 동의합니다)</label>
+
+<canvas id="rentSignaturePad" width="300" height="120" style="border:1px solid #ddd;border-radius:12px;width:100%;touch-action:none;background:white;"></canvas>
+
+<button id="clearRentSignature" style="background:#8e8e93;margin-top:8px;">서명 지우기</button>
+
 <div class="modalButtons">
 
 <button id="rentBtn">
@@ -92,12 +105,6 @@ placeholder="이름">
 <h3 id="returnTitle"></h3>
 
 <p id="returnInfo"></p>
-
-<label style="font-size:13px;color:#666;">서명</label>
-
-<canvas id="signaturePad" width="300" height="120" style="border:1px solid #ddd;border-radius:12px;width:100%;touch-action:none;background:white;"></canvas>
-
-<button id="clearSignature" style="background:#8e8e93;margin-top:8px;">서명 지우기</button>
 
 <div class="modalButtons">
 
