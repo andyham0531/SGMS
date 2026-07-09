@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGMS - 우산 대여 이력</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script type="module" src="umbrella_records.js"></script>
+
+</head>
+
+<body>
+
+<div class="container recordsContainer">
+
+<a href="umbrella_admin.html" class="backLink">← 우산관리로</a>
+
+<h1>대여 이력</h1>
+<p>연번 · 학번 · 이름 · 대여일 · 반납일 · 연체여부 · 서명</p>
+
+<div class="tableScroll">
+<table class="recordsTable">
+<thead>
+<tr>
+<th>연번</th>
+<th>학번</th>
+<th>이름</th>
+<th>대여일</th>
+<th>반납일</th>
+<th>연체여부</th>
+<th>서명</th>
+</tr>
+</thead>
+<tbody id="recordsBody">
+</tbody>
+</table>
+</div>
+
+<p id="emptyMsg" class="hidden" style="margin-top:20px;">아직 반납 이력이 없습니다.</p>
+
+</div>
+
+</body>
+
+</html>
