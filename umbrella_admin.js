@@ -10,14 +10,6 @@ import {
   onSnapshot,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-storage.js";
-
-const storage = getStorage();
 
 const TOTAL_UMBRELLAS = 15;
 const OVERDUE_DAYS = 3;
@@ -42,11 +34,9 @@ const closeRentBtn = document.getElementById("closeRent");
 const closeReturnBtn = document.getElementById("closeReturn");
 
 const returnInfo = document.getElementById("returnInfo");
-const returnPhoto = document.getElementById("returnPhoto");
 
 let currentManager = "";
 let currentUmbrella = null;
-let selectedPhoto = null;
 let umbrellaData = {};
 
 // 실시간 상태 = "umbrellas" 컬렉션 (문서 ID = 우산 번호)
@@ -63,10 +53,6 @@ studentIdInput.addEventListener("input", () => {
   if (studentsData[id]) {
     studentNameInput.value = studentsData[id];
   }
-});
-
-returnPhoto.addEventListener("change", (e) => {
-  selectedPhoto = e.target.files[0] || null;
 });
 
 closeRentBtn.addEventListener("click", () => rentModal.classList.add("hidden"));
@@ -183,8 +169,6 @@ function openRent(number) {
 function openReturn(number, data) {
   returnTitle.textContent = `${number}번 우산 반납`;
   returnInfo.innerHTML = `<b>${data.studentName}</b><br>${data.studentId}`;
-  selectedPhoto = null;
-  returnPhoto.value = "";
   returnModal.classList.remove("hidden");
 }
 
@@ -215,13 +199,6 @@ async function submitReturn() {
   const data = umbrellaData[currentUmbrella];
   if (!data) return;
 
-  let photoUrl = "";
-  if (selectedPhoto) {
-    const photoRef = ref(storage, `umbrella/${currentUmbrella}_${Date.now()}.jpg`);
-    await uploadBytes(photoRef, selectedPhoto);
-    photoUrl = await getDownloadURL(photoRef);
-  }
-
   await setDoc(doc(db, "umbrellas", String(currentUmbrella)), {
     number: currentUmbrella,
     status: "대여가능",
@@ -232,7 +209,6 @@ async function submitReturn() {
     studentId: data.studentId,
     studentName: data.studentName,
     manager: currentManager,
-    photoUrl,
     rentDate: data.rentDate || null,
     returnDate: serverTimestamp(),
     status: "반납완료",
