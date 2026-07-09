@@ -25,6 +25,10 @@ function getManager(number) {
   return { name: "이윤빈", phone: "010-5109-1236" };
 }
 
+function smsHref(phone) {
+  return "sms:" + phone.replace(/-/g, "");
+}
+
 function getPassedDays(time) {
   if (!time) return 0;
   const date = time.toDate ? time.toDate() : new Date(time);
@@ -71,6 +75,7 @@ const rentStep2 = document.getElementById("rentStep2");
 const rentManagerInfo = document.getElementById("rentManagerInfo");
 const rentMessageBox = document.getElementById("rentMessageBox");
 const rentCopyBtn = document.getElementById("rentCopyBtn");
+const rentSmsLink = document.getElementById("rentSmsLink");
 
 const rentStep3 = document.getElementById("rentStep3");
 const rentSignaturePad = document.getElementById("rentSignaturePad");
@@ -125,6 +130,7 @@ function validateRentStep1() {
   const manager = getManager(Number(number));
   rentManagerInfo.textContent = `${manager.name} 담당 · ${manager.phone}`;
   rentMessageBox.value = `${id} ${name} ${number}번 우산 대여합니다`;
+  rentSmsLink.href = smsHref(manager.phone);
   rentStep2.classList.remove("hidden");
 
   // 학번/이름/번호가 바뀌면 복사 절차부터 다시
@@ -238,6 +244,7 @@ const returnFoundTitle = document.getElementById("returnFoundTitle");
 const returnManagerInfo = document.getElementById("returnManagerInfo");
 const returnMessageBox = document.getElementById("returnMessageBox");
 const returnCopyBtn = document.getElementById("returnCopyBtn");
+const returnSmsLink = document.getElementById("returnSmsLink");
 
 const returnStep3 = document.getElementById("returnStep3");
 const returnPhotoInput = document.getElementById("returnPhotoInput");
@@ -304,6 +311,7 @@ findReturnBtn.addEventListener("click", async () => {
     returnFoundTitle.textContent = `${foundNumber}번 우산 · ${days}일째 대여중`;
     returnManagerInfo.textContent = `${manager.name} 담당 · ${manager.phone}`;
     returnMessageBox.value = `${id} ${name} ${foundNumber}번 우산 반납합니다`;
+    returnSmsLink.href = smsHref(manager.phone);
 
     returnStep2.classList.remove("hidden");
   } finally {
