@@ -15,68 +15,77 @@
 
 <div class="container">
 
-<a href="index.html" class="backLink">← 처음으로</a>
+<h1>우산 대여 · 반납</h1>
 
-<h1>우산 대여/반납</h1>
-<p>학번을 입력하고 조회하면 대여하거나 반납할 수 있어요</p>
+<div class="modeSwitch">
+<button id="modeRentBtn" class="modeBtn active">대여하기</button>
+<button id="modeReturnBtn" class="modeBtn">반납하기</button>
+</div>
+
+<!-- ===== 대여 플로우 ===== -->
+<div id="rentFlow">
 
 <div class="card">
+<input id="rentStudentId" placeholder="학번 입력" inputmode="numeric">
+<input id="rentStudentName" placeholder="이름 입력">
+<label class="smallLabel">대여할 우산 번호</label>
+<select id="rentUmbrellaSelect">
+<option value="">우산 번호 선택</option>
+</select>
+</div>
 
-<input
-id="studentId"
-placeholder="학번 입력"
-inputmode="numeric">
+<div id="rentStep2" class="countBox hidden">
+<h3>1. 담당자에게 문자 보내기</h3>
+<p id="rentManagerInfo" class="managerInfo"></p>
+<textarea id="rentMessageBox" class="msgBox" readonly rows="2"></textarea>
+<button id="rentCopyBtn">메시지 복사하기</button>
+</div>
 
-<input
-id="studentName"
-placeholder="이름 입력">
-
-<button id="checkBtn">
-조회
-</button>
+<div id="rentStep3" class="countBox hidden">
+<h3>2. 약관 확인 및 서명</h3>
+<div class="termsBox">
+⚠️ <b>우산 분실은 어떠한 경우에도 용납되지 않습니다.</b><br>
+• 3일 이상 연체 시 <b>1개월간 대여가 제한</b>됩니다.<br>
+• 분실 시 <b>벌금 5,000원</b>이 부과됩니다.<br>
+• 반납할 때 우산 <b>손잡이에 적힌 번호</b>를 꼭 확인하고, 빌린 그 우산을 반납해주세요.
+</div>
+<label class="smallLabel">서명 (위 내용에 동의합니다)</label>
+<canvas id="rentSignaturePad" width="300" height="120" class="sigCanvas"></canvas>
+<button id="clearRentSignature" class="grayBtn">서명 지우기</button>
+<button id="confirmRentBtn" class="topGapBtn">대여 완료</button>
+</div>
 
 </div>
 
-<!-- 현재 대여중일 때: 반납 영역 -->
-<div id="returnBox" class="countBox hidden">
+<!-- ===== 반납 플로우 ===== -->
+<div id="returnFlow" class="hidden">
 
-<h3 id="returnTitle"></h3>
-
-<div class="resultRow">
-<span class="resultLabel">우산 번호</span>
-<span id="returnNumber" class="resultValue"></span>
+<div class="card">
+<input id="returnStudentId" placeholder="학번 입력" inputmode="numeric">
+<input id="returnStudentName" placeholder="이름 입력">
+<button id="findReturnBtn">조회</button>
 </div>
 
-<div class="resultRow">
-<span class="resultLabel">대여일</span>
-<span id="returnDate" class="resultValue"></span>
+<div id="returnStep2" class="countBox hidden">
+<h3 id="returnFoundTitle"></h3>
+<p id="returnManagerInfo" class="managerInfo"></p>
+<textarea id="returnMessageBox" class="msgBox" readonly rows="2"></textarea>
+<button id="returnCopyBtn">메시지 복사하기</button>
 </div>
 
-<div class="resultRow">
-<span class="resultLabel">경과일</span>
-<span id="returnDays" class="resultValue"></span>
+<div id="returnStep3" class="countBox hidden">
+<h3>반납 사진 첨부</h3>
+<input type="file" id="returnPhotoInput" accept="image/*" capture="environment">
+<button id="sendPhotoBtn" class="topGapBtn">사진 담당자에게 보내기</button>
 </div>
 
-<label style="font-size:13px;color:#666;">서명</label>
-
-<canvas id="signaturePad" width="300" height="120" style="border:1px solid #ddd;border-radius:12px;width:100%;touch-action:none;background:white;"></canvas>
-
-<button id="clearSignature" style="background:#8e8e93;margin-top:8px;">서명 지우기</button>
-
-<button id="doReturnBtn" style="margin-top:10px;">우산 반납하기</button>
-
+<div id="returnStep4" class="hidden">
+<button id="finalReturnBtn">반납 완료</button>
 </div>
 
-<!-- 대여중이 아닐 때: 대여 가능 목록 -->
-<div id="rentBox" class="countBox hidden">
-
-<h3>대여 가능한 우산</h3>
-
-<div id="availableList" class="umbrellaGrid"></div>
+<p id="returnBanMsg" class="warning hidden"></p>
 
 </div>
-
-<p id="banMsg" class="warning hidden" style="margin-top:16px;"></p>
 
 </div>
 
