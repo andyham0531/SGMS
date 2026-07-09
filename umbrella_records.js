@@ -38,16 +38,18 @@ async function loadRecords() {
   snapshot.forEach((docSnap) => {
     const data = docSnap.data();
 
-    // 분실 기록은 반납일 없이 상태만 표시
+    // 분실/대여중 상태는 반납일·연체여부를 '-'로 표시
     const isLost = data.status === "분실";
+    const isActive = data.status === "대여중";
 
     const rentStr = formatDate(data.rentDate);
     const returnStr = isLost ? "분실" : formatDate(data.returnDate);
-    const overdueStr = isLost
-      ? "-"
-      : data.isOverdue
-      ? `O (${data.overdueDays}일)`
-      : "X";
+    const overdueStr =
+      isLost || isActive
+        ? "-"
+        : data.isOverdue
+        ? `O (${data.overdueDays}일)`
+        : "X";
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
