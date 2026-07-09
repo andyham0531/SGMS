@@ -129,11 +129,19 @@ function getPassedDays(time) {
   return Math.floor((Date.now() - date.getTime()) / 86400000);
 }
 
+// 화면 표시용: 대여한 날을 1일째로 셈
+function getDisplayDay(time) {
+  return getPassedDays(time) + 1;
+}
+
 function getStatusClass(data) {
   if (!data || !data.status || data.status === "대여가능") return "available";
   if (data.status === "분실") return "lost";
   if (data.status === "대여중") {
-    return getPassedDays(data.rentDate) >= OVERDUE_DAYS ? "overdue" : "rented";
+    const displayDay = getDisplayDay(data.rentDate);
+    if (displayDay <= 1) return "day1";
+    if (displayDay === 2) return "rented";
+    return "overdue";
   }
   return "available";
 }
@@ -157,7 +165,7 @@ function renderGrid() {
 
     let text = "대여가능";
     if (data.status === "대여중") {
-      text = `${data.studentName}<br>${getPassedDays(data.rentDate)}일`;
+      text = `${data.studentName}<br>${getDisplayDay(data.rentDate)}일`;
     } else if (data.status === "분실") {
       text = "분실 (탭하여 복구)";
     }
