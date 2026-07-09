@@ -6,6 +6,7 @@ import {
   doc,
   setDoc,
   addDoc,
+  updateDoc,
   getDocs,
   query,
   where,
@@ -191,6 +192,22 @@ clearRentSignatureBtn.addEventListener("click", () => {
   hasRentSignature = false;
 });
 
+async function checkBan(studentId) {
+  const snap = await getDocs(query(recordCol, where("studentId", "==", studentId)));
+  const now = Date.now();
+  let banUntilDate = null;
+  snap.forEach((docSnap) => {
+    const d = docSnap.data();
+    if (d.banUntil) {
+      const until = d.banUntil.toDate ? d.banUntil.toDate() : new Date(d.banUntil);
+      if (until.getTime() > now && (!banUntilDate || until > banUntilDate)) {
+        banUntilDate = until;
+      }
+    }
+  });
+  return banUntilDate;
+}
+
 confirmRentBtn.addEventListener("click", async () => {
   if (!hasCopiedRent) {
     alert("먼저 담당자에게 메시지를 복사해서 보내주세요.");
@@ -208,14 +225,37 @@ confirmRentBtn.addEventListener("click", async () => {
 
   confirmRentBtn.disabled = true;
   try {
+    const banUntil = await checkBan(id);
+    if (banUntil) {
+      alert(`연체 이력으로 인해 현재 대여가 제한된 상태입니다.\n(해제일: ${banUntil.toLocaleDateString("ko-KR")})`);
+      return;
+    }
+
+    const rentDate = serverTimestamp();
+    const signatureData = hasRentSignature ? rentSignaturePad.toDataURL("image/png") : "";
+
+    const recordRef = await addDoc(recordCol, {
+      umbrellaNumber: number,
+      studentId: id,
+      studentName: name,
+      manager: manager.name,
+      rentDate,
+      returnDate: null,
+      overdueDays: 0,
+      isOverdue: false,
+      banUntil: null,
+      signature: signatureData,
+      status: "대여중",
+    });
+
     await setDoc(doc(db, "umbrellas", String(number)), {
       number,
       status: "대여중",
       studentId: id,
       studentName: name,
       manager: manager.name,
-      agreementSignature: hasRentSignature ? rentSignaturePad.toDataURL("image/png") : "",
-      rentDate: serverTimestamp(),
+      rentDate,
+      recordId: recordRef.id,
     });
 
     alert(`${number}번 우산 대여가 완료되었습니다! 잊지 말고 ${manager.name} 담당자에게 문자 보내는 것도 확인해주세요.`);
@@ -370,19 +410,15 @@ finalReturnBtn.addEventListener("click", async () => {
       status: "대여가능",
     });
 
-    await addDoc(recordCol, {
-      umbrellaNumber: Number(currentReturnNumber),
-      studentId: currentReturnData.studentId,
-      studentName: currentReturnData.studentName,
-      manager: getManager(Number(currentReturnNumber)).name,
-      rentDate: currentReturnData.rentDate || null,
-      returnDate: serverTimestamp(),
-      overdueDays: isOverdue ? overdueDays : 0,
-      isOverdue,
-      banUntil: isOverdue ? new Date(Date.now() + BAN_DAYS * 86400000) : null,
-      signature: "",
-      status: "반납완료",
-    });
+    if (currentReturnData.recordId) {
+      await updateDoc(doc(db, "umbrella_records", currentReturnData.recordId), {
+        returnDate: serverTimestamp(),
+        overdueDays: isOverdue ? overdueDays : 0,
+        isOverdue,
+        banUntil: isOverdue ? new Date(Date.now() + BAN_DAYS * 86400000) : null,
+        status: "반납완료",
+      });
+    }
 
     if (isOverdue) {
       alert(`반납 처리되었습니다.\n연체(${overdueDays}일)로 인해 ${BAN_DAYS}일간 대여가 제한됩니다.`);
