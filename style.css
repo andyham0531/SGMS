@@ -591,3 +591,93 @@ td{
     border-radius:4px;
     background:white;
 }
+
+/* ===== 우산 대여/반납 셀프서비스 ===== */
+.modeSwitch{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+}
+
+.modeBtn{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#e5e5ea;
+    color:#555;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.modeBtn.active{
+    background:#5856d6;
+    color:white;
+}
+
+.smallLabel{
+    display:block;
+    font-size:13px;
+    color:#666;
+    margin-top:6px;
+    margin-bottom:4px;
+}
+
+#rentUmbrellaSelect{
+    width:100%;
+    padding:14px;
+    border:none;
+    background:#f4f4f4;
+    border-radius:12px;
+    font-size:16px;
+}
+
+.managerInfo{
+    font-weight:700;
+    color:#5856d6;
+    margin-bottom:8px;
+}
+
+.msgBox{
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    font-size:14px;
+    resize:none;
+    background:#fafafa;
+}
+
+.termsBox{
+    background:#fff3f3;
+    border-left:5px solid #ff3b30;
+    border-radius:10px;
+    padding:12px;
+    font-size:13px;
+    line-height:1.6;
+    color:#333;
+    margin:10px 0;
+}
+
+.sigCanvas{
+    border:1px solid #ddd;
+    border-radius:12px;
+    width:100%;
+    touch-action:none;
+    background:white;
+    display:block;
+}
+
+.grayBtn{
+    background:#8e8e93;
+    margin-top:8px;
+}
+
+.topGapBtn{
+    margin-top:10px;
+}
+
+#returnPhotoInput{
+    width:100%;
+    margin-top:6px;
+}
