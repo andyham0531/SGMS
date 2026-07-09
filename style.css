@@ -422,6 +422,7 @@ td{
     color:#ff9500;
     font-weight:600;
 }
+
 .umbrellaSmallBtn{
     position:absolute;
     top:20px;
@@ -537,4 +538,15 @@ td{
     border-left:5px solid #ff3b30;
     border-radius:10px;
     font-size:14px;
+}
+
+.reminderBtn{
+    width:auto;
+    display:block;
+    margin-top:8px;
+    padding:6px 12px;
+    font-size:12px;
+    font-weight:600;
+    background:#ff9500;
+    border-radius:8px;
 }
