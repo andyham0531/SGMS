@@ -39,11 +39,10 @@ const closeReturnBtn = document.getElementById("closeReturn");
 
 const returnInfo = document.getElementById("returnInfo");
 
-const signaturePad = document.getElementById("signaturePad");
-const clearSignatureBtn = document.getElementById("clearSignature");
-const sigCtx = signaturePad.getContext("2d");
-let isDrawing = false;
-let hasSignature = false;
+const rentSignaturePad = document.getElementById("rentSignaturePad");
+const clearRentSignatureBtn = document.getElementById("clearRentSignature");
+const rentSigCtx = rentSignaturePad.getContext("2d");
+let hasRentSignature = false;
 
 let currentManager = "";
 let currentUmbrella = null;
@@ -75,49 +74,53 @@ returnModal.addEventListener("click", (e) => {
   if (e.target === returnModal) returnModal.classList.add("hidden");
 });
 
-// ===== 서명 캔버스 =====
-function getPos(e) {
-  const rect = signaturePad.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  return { x: clientX - rect.left, y: clientY - rect.top };
+// ===== 서명 캔버스 (공용 함수) =====
+function setupSignaturePad(canvas, ctx, onDraw) {
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: clientX - rect.left, y: clientY - rect.top };
+  }
+
+  let drawing = false;
+
+  function startDraw(e) {
+    drawing = true;
+    onDraw(true);
+    const pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    e.preventDefault();
+  }
+  function draw(e) {
+    if (!drawing) return;
+    const pos = getPos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = "#1b2a4a";
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.stroke();
+    e.preventDefault();
+  }
+  function endDraw() {
+    drawing = false;
+  }
+
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", endDraw);
+  canvas.addEventListener("mouseleave", endDraw);
+  canvas.addEventListener("touchstart", startDraw);
+  canvas.addEventListener("touchmove", draw);
+  canvas.addEventListener("touchend", endDraw);
 }
 
-function startDraw(e) {
-  isDrawing = true;
-  hasSignature = true;
-  const pos = getPos(e);
-  sigCtx.beginPath();
-  sigCtx.moveTo(pos.x, pos.y);
-  e.preventDefault();
-}
+setupSignaturePad(rentSignaturePad, rentSigCtx, (v) => (hasRentSignature = v));
 
-function draw(e) {
-  if (!isDrawing) return;
-  const pos = getPos(e);
-  sigCtx.lineTo(pos.x, pos.y);
-  sigCtx.strokeStyle = "#1b2a4a";
-  sigCtx.lineWidth = 2;
-  sigCtx.lineCap = "round";
-  sigCtx.stroke();
-  e.preventDefault();
-}
-
-function endDraw() {
-  isDrawing = false;
-}
-
-signaturePad.addEventListener("mousedown", startDraw);
-signaturePad.addEventListener("mousemove", draw);
-signaturePad.addEventListener("mouseup", endDraw);
-signaturePad.addEventListener("mouseleave", endDraw);
-signaturePad.addEventListener("touchstart", startDraw);
-signaturePad.addEventListener("touchmove", draw);
-signaturePad.addEventListener("touchend", endDraw);
-
-clearSignatureBtn.addEventListener("click", () => {
-  sigCtx.clearRect(0, 0, signaturePad.width, signaturePad.height);
-  hasSignature = false;
+clearRentSignatureBtn.addEventListener("click", () => {
+  rentSigCtx.clearRect(0, 0, rentSignaturePad.width, rentSignaturePad.height);
+  hasRentSignature = false;
 });
 
 function getPassedDays(time) {
@@ -245,14 +248,14 @@ function openRent(number) {
   rentTitle.textContent = `${number}번 우산 대여`;
   studentIdInput.value = "";
   studentNameInput.value = "";
+  rentSigCtx.clearRect(0, 0, rentSignaturePad.width, rentSignaturePad.height);
+  hasRentSignature = false;
   rentModal.classList.remove("hidden");
 }
 
 function openReturn(number, data) {
   returnTitle.textContent = `${number}번 우산 반납`;
   returnInfo.innerHTML = `<b>${data.studentName}</b><br>${data.studentId}`;
-  sigCtx.clearRect(0, 0, signaturePad.width, signaturePad.height);
-  hasSignature = false;
   returnModal.classList.remove("hidden");
 }
 
@@ -275,13 +278,32 @@ async function submitRent() {
       return;
     }
 
+    const rentDate = serverTimestamp();
+    const signatureData = hasRentSignature ? rentSignaturePad.toDataURL("image/png") : "";
+
+    // 대여 이력을 지금 바로 생성 (반납 전까지는 반납일 없음)
+    const recordRef = await addDoc(recordCol, {
+      umbrellaNumber: currentUmbrella,
+      studentId,
+      studentName,
+      manager: currentManager,
+      rentDate,
+      returnDate: null,
+      overdueDays: 0,
+      isOverdue: false,
+      banUntil: null,
+      signature: signatureData,
+      status: "대여중",
+    });
+
     await setDoc(doc(db, "umbrellas", String(currentUmbrella)), {
       number: currentUmbrella,
       status: "대여중",
       studentId,
       studentName,
       manager: currentManager,
-      rentDate: serverTimestamp(),
+      rentDate,
+      recordId: recordRef.id,
     });
 
     rentModal.classList.add("hidden");
@@ -295,35 +317,25 @@ async function submitReturn() {
   const data = umbrellaData[currentUmbrella];
   if (!data) return;
 
-  if (!hasSignature) {
-    const skip = confirm("서명이 없습니다. 서명 없이 반납 처리하시겠습니까?");
-    if (!skip) return;
-  }
-
   returnBtn.disabled = true;
   try {
     const overdueDays = getPassedDays(data.rentDate);
     const isOverdue = overdueDays >= OVERDUE_DAYS;
-    const signatureData = hasSignature ? signaturePad.toDataURL("image/png") : "";
 
     await setDoc(doc(db, "umbrellas", String(currentUmbrella)), {
       number: currentUmbrella,
       status: "대여가능",
     });
 
-    await addDoc(recordCol, {
-      umbrellaNumber: currentUmbrella,
-      studentId: data.studentId,
-      studentName: data.studentName,
-      manager: currentManager,
-      rentDate: data.rentDate || null,
-      returnDate: serverTimestamp(),
-      overdueDays: isOverdue ? overdueDays : 0,
-      isOverdue,
-      banUntil: isOverdue ? new Date(Date.now() + BAN_DAYS * 86400000) : null,
-      signature: signatureData,
-      status: "반납완료",
-    });
+    if (data.recordId) {
+      await updateDoc(doc(db, "umbrella_records", data.recordId), {
+        returnDate: serverTimestamp(),
+        overdueDays: isOverdue ? overdueDays : 0,
+        isOverdue,
+        banUntil: isOverdue ? new Date(Date.now() + BAN_DAYS * 86400000) : null,
+        status: "반납완료",
+      });
+    }
 
     returnModal.classList.add("hidden");
 
@@ -347,15 +359,13 @@ async function submitLost() {
     status: "분실",
   });
 
-  await addDoc(recordCol, {
-    umbrellaNumber: currentUmbrella,
-    studentId: data?.studentId || "",
-    studentName: data?.studentName || "",
-    manager: currentManager,
-    status: "분실",
-    fine: LOST_FINE,
-    lostDate: serverTimestamp(),
-  });
+  if (data?.recordId) {
+    await updateDoc(doc(db, "umbrella_records", data.recordId), {
+      status: "분실",
+      fine: LOST_FINE,
+      lostDate: serverTimestamp(),
+    });
+  }
 
   returnModal.classList.add("hidden");
   alert("분실 처리되었습니다. (그리드에서 해당 우산을 다시 탭하면 나중에 찾았을 때 복구할 수 있어요)");
