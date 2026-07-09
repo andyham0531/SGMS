@@ -1,1 +1,701 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
 
+body{
+    background:#f2f2f7;
+}
+
+.container{
+    max-width:500px;
+    margin:30px auto;
+    padding:20px;
+    position:relative;
+}
+
+h1{
+    text-align:center;
+    font-size:34px;
+    font-weight:700;
+}
+
+p{
+    text-align:center;
+    color:#666;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin-bottom:12px;
+    border:none;
+    background:#f4f4f4;
+    border-radius:12px;
+    font-size:16px;
+}
+
+input:focus{
+    outline:2px solid #007AFF;
+    background:white;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    background:#007AFF;
+    color:white;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+button:hover{
+    transform:scale(.98);
+}
+
+.countBox{
+    background:white;
+    margin-top:20px;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    padding:12px;
+    background:#007AFF;
+    color:white;
+}
+
+td{
+    padding:12px;
+    text-align:center;
+    border-bottom:1px solid #eee;
+}
+
+.bottom{
+    margin-top:20px;
+}
+
+#deleteAll{
+    background:#ff3b30;
+}
+
+.warning{
+    color:#ff3b30;
+    font-weight:bold;
+}
+
+.deleteOneBtn{
+    width:auto;
+    padding:6px 12px;
+    font-size:13px;
+    background:#ff3b30;
+    border-radius:8px;
+}
+
+.madeBy{
+    text-align:center;
+    margin-bottom:12px;
+}
+
+.madeBy span{
+    display:inline-block;
+    background:#007AFF;
+    color:white;
+    font-size:14px;
+    font-weight:700;
+    padding:6px 16px;
+    border-radius:999px;
+}
+
+.penaltyCell{
+    color:#ff3b30;
+    font-weight:700;
+}
+
+.processPenaltyBtn{
+    width:auto;
+    padding:4px 10px;
+    font-size:11px;
+    font-weight:600;
+    background:#ff9500;
+    border-radius:6px;
+    margin-left:4px;
+}
+
+.adjustCell{
+    display:flex;
+    gap:6px;
+    justify-content:center;
+}
+
+.adjustBtn{
+    width:auto;
+    padding:6px 12px;
+    font-size:15px;
+    font-weight:700;
+    border-radius:8px;
+}
+
+.minusBtn{
+    background:#8e8e93;
+}
+
+.plusBtn{
+    background:#34c759;
+}
+
+/* 시작 화면 메뉴 */
+.menuBox{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    margin-top:10px;
+}
+
+.menuBtn{
+    display:block;
+    width:100%;
+    text-align:center;
+    padding:22px;
+    border-radius:18px;
+    font-size:20px;
+    font-weight:700;
+    color:white;
+    text-decoration:none;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.lunchBtn{
+    background:#007AFF;
+}
+
+.morningBtn{
+    background:#ff9500;
+}
+
+.checkBtn{
+    background:#8e8e93;
+}
+
+/* 시작화면 좌측 상단 선도부 전용 링크 (눈에 안 띄게) */
+.staffLinks{
+    position:absolute;
+    top:16px;
+    left:16px;
+    display:flex;
+    gap:10px;
+}
+
+.staffLinks a{
+    font-size:11px;
+    color:#c7c7cc;
+    text-decoration:none;
+}
+
+/* 시작화면 벌점조회 버튼 (작게, 중앙) */
+.checkSmallBtn{
+    position:absolute;
+    top:20px;
+    left:20px;
+    color:#8e8e93;
+    font-size:12px;
+    text-decoration:none;
+    font-weight:600;
+    background:none;
+    padding:0;
+    border-radius:0;
+}
+
+/* 각 페이지 상단 처음으로 가기 링크 */
+.backLink{
+    display:inline-block;
+    margin-bottom:12px;
+    color:#007AFF;
+    text-decoration:none;
+    font-weight:600;
+}
+
+/* 급식선도: 선택 체크박스 (동그랗게) */
+.selectCheck{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    accent-color:#007AFF;
+}
+
+/* 급식선도: 학생 선택 시 뜨는 플로팅 조정 패널 */
+.floatingAdjust{
+    position:absolute;
+    top:16px;
+    right:16px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:#f4f4f4;
+    padding:6px 10px;
+    border-radius:999px;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+.floatingAdjust.hidden{
+    display:none;
+}
+
+.floatingName{
+    font-size:12px;
+    color:#333;
+    font-weight:600;
+    max-width:100px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.circleBtn{
+    width:28px;
+    height:28px;
+    padding:0;
+    border-radius:50%;
+    font-size:14px;
+    font-weight:700;
+    line-height:1;
+}
+
+.minusCircle{
+    background:#8e8e93;
+}
+
+.plusCircle{
+    background:#34c759;
+}
+
+.countBox{
+    position:relative;
+}
+
+/* 아침선도: 사유 선택 라디오 그룹 */
+.reasonGroup{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:12px;
+    font-size:14px;
+    color:#333;
+}
+
+.reasonGroup label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.reasonGroup input[type="radio"]{
+    width:auto;
+    flex-shrink:0;
+    margin-bottom:0;
+}
+
+.customFields{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.customFields.hidden{
+    display:none;
+}
+
+.hidden{
+    display:none;
+}
+
+/* 벌점 조회 결과 */
+.resultRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+}
+
+.resultRow:last-child{
+    border-bottom:none;
+}
+
+.resultLabel{
+    color:#666;
+    font-size:15px;
+}
+
+.resultValue{
+    font-size:18px;
+    font-weight:700;
+}
+
+/* 벌점 기준 안내 */
+.rulesBox{
+    background:white;
+    margin-top:20px;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.rulesBox h3{
+    margin-bottom:12px;
+}
+
+.ruleGroup{
+    border-top:1px solid #eee;
+    padding:10px 0;
+}
+
+.ruleGroup:first-of-type{
+    border-top:none;
+}
+
+.ruleGroup summary{
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.ruleGroup summary::-webkit-details-marker{
+    display:none;
+}
+
+.ruleScore{
+    color:#ff3b30;
+    font-weight:700;
+    font-size:13px;
+    background:#fdecea;
+    padding:2px 8px;
+    border-radius:8px;
+}
+
+.ruleGroup ul{
+    margin-top:10px;
+    padding-left:18px;
+}
+
+.ruleGroup li{
+    font-size:13px;
+    color:#444;
+    line-height:1.5;
+    margin-bottom:8px;
+}
+
+.ruleNote{
+    display:block;
+    color:#999;
+    font-size:12px;
+    margin-top:2px;
+}
+
+.ruleTodo{
+    color:#ff9500;
+    font-weight:600;
+}
+
+.umbrellaSmallBtn{
+    position:absolute;
+    top:20px;
+    right:20px;
+    color:#8e8e93;
+    font-size:12px;
+    text-decoration:none;
+    font-weight:600;
+}
+.umbrellaBtn{
+    background:#5856d6;
+}
+
+/* ===== 우산관리 ===== */
+
+.umbrellaGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:15px;
+}
+
+.umbrellaCard{
+    border-radius:16px;
+    padding:18px 10px;
+    text-align:center;
+    color:white;
+    cursor:pointer;
+    font-weight:700;
+    transition:.2s;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.umbrellaCard:hover{
+    transform:scale(.98);
+}
+
+.umbrellaNumber{
+    font-size:22px;
+    margin-bottom:6px;
+}
+
+.umbrellaState{
+    font-size:13px;
+}
+
+.available{
+    background:#34c759;
+}
+
+.day1{
+    background:#ffd400;
+    color:#333;
+}
+
+.rented{
+    background:#ff9500;
+}
+
+.overdue{
+    background:#ff3b30;
+}
+
+.lost{
+    background:#8e8e93;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+
+.modal.hidden{
+    display:none;
+}
+
+.modalCard{
+    width:90%;
+    max-width:380px;
+    background:white;
+    border-radius:18px;
+    padding:20px;
+}
+
+.modalButtons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.modalButtons button{
+    flex:1;
+}
+
+#managerSelect{
+    width:100%;
+    padding:14px;
+    border:none;
+    background:#f4f4f4;
+    border-radius:12px;
+    font-size:16px;
+}
+
+#overdueList{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.overdueItem{
+    padding:12px;
+    background:#fff3f3;
+    border-left:5px solid #ff3b30;
+    border-radius:10px;
+    font-size:14px;
+}
+
+.reminderBtn{
+    width:auto;
+    display:block;
+    margin-top:8px;
+    padding:6px 12px;
+    font-size:12px;
+    font-weight:600;
+    background:#ff9500;
+    border-radius:8px;
+}
+
+/* ===== 우산 대여 이력 표 ===== */
+.recordsContainer{
+    max-width:700px;
+}
+
+.tableScroll{
+    overflow-x:auto;
+    margin-top:15px;
+    background:white;
+    border-radius:18px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.recordsTable{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+    white-space:nowrap;
+}
+
+.recordsTable th{
+    padding:10px 8px;
+    background:#5856d6;
+    color:white;
+    font-size:11px;
+}
+
+.recordsTable td{
+    padding:10px 8px;
+    text-align:center;
+    border-bottom:1px solid #eee;
+}
+
+.signatureThumb{
+    width:60px;
+    height:auto;
+    border:1px solid #eee;
+    border-radius:4px;
+    background:white;
+}
+
+/* ===== 우산 대여/반납 셀프서비스 ===== */
+.modeSwitch{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+}
+
+.modeBtn{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#e5e5ea;
+    color:#555;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.modeBtn.active{
+    background:#5856d6;
+    color:white;
+}
+
+.smallLabel{
+    display:block;
+    font-size:13px;
+    color:#666;
+    margin-top:6px;
+    margin-bottom:4px;
+}
+
+#rentUmbrellaSelect{
+    width:100%;
+    padding:14px;
+    border:none;
+    background:#f4f4f4;
+    border-radius:12px;
+    font-size:16px;
+}
+
+.managerInfo{
+    font-weight:700;
+    color:#5856d6;
+    margin-bottom:8px;
+}
+
+.msgBox{
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    font-size:14px;
+    resize:none;
+    background:#fafafa;
+}
+
+.termsBox{
+    background:#fff3f3;
+    border-left:5px solid #ff3b30;
+    border-radius:10px;
+    padding:12px;
+    font-size:13px;
+    line-height:1.6;
+    color:#333;
+    margin:10px 0;
+}
+
+.sigCanvas{
+    border:1px solid #ddd;
+    border-radius:12px;
+    width:100%;
+    touch-action:none;
+    background:white;
+    display:block;
+}
+
+.grayBtn{
+    background:#8e8e93;
+    margin-top:8px;
+}
+
+.smsBtn{
+    display:block;
+    text-align:center;
+    padding:15px;
+    margin-top:8px;
+    border-radius:14px;
+    background:#34c759;
+    color:white;
+    font-size:17px;
+    font-weight:600;
+    text-decoration:none;
+}
+
+.topGapBtn{
+    margin-top:10px;
+}
+
+#returnPhotoInput{
+    width:100%;
+    margin-top:6px;
+}
