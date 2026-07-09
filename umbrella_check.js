@@ -86,13 +86,7 @@ const rentSigCtx = rentSignaturePad.getContext("2d");
 let hasRentSignature = false;
 let hasCopiedRent = false;
 
-rentStudentIdInput.addEventListener("input", () => {
-  const id = rentStudentIdInput.value.trim();
-  if (studentsData[id]) {
-    rentStudentNameInput.value = studentsData[id];
-  }
-  validateRentStep1();
-});
+rentStudentIdInput.addEventListener("input", validateRentStep1);
 rentStudentNameInput.addEventListener("input", validateRentStep1);
 rentUmbrellaSelect.addEventListener("change", validateRentStep1);
 
@@ -121,12 +115,26 @@ function validateRentStep1() {
   const name = rentStudentNameInput.value.trim();
   const number = rentUmbrellaSelect.value;
 
+  const rentIdError = document.getElementById("rentIdError");
+
   if (!id || !name || !number) {
     rentStep2.classList.add("hidden");
     rentStep3.classList.add("hidden");
     hasCopiedRent = false;
+    if (rentIdError) rentIdError.classList.add("hidden");
     return;
   }
+
+  // 학번+이름이 명렬표와 정확히 일치해야 다음 단계로 진행
+  if (studentsData[id] !== name) {
+    rentStep2.classList.add("hidden");
+    rentStep3.classList.add("hidden");
+    hasCopiedRent = false;
+    if (rentIdError) rentIdError.classList.remove("hidden");
+    return;
+  }
+
+  if (rentIdError) rentIdError.classList.add("hidden");
 
   const manager = getManager(Number(number));
   rentManagerInfo.textContent = `${manager.name} 담당 · ${manager.phone}`;
@@ -231,6 +239,20 @@ confirmRentBtn.addEventListener("click", async () => {
       return;
     }
 
+    // 이미 다른 우산을 대여 중인지 확인
+    const snapshot = await getDocs(umbrellaCol);
+    let alreadyRentingNumber = null;
+    snapshot.forEach((docSnap) => {
+      const d = docSnap.data();
+      if (d.status === "대여중" && d.studentId === id) {
+        alreadyRentingNumber = docSnap.id;
+      }
+    });
+    if (alreadyRentingNumber) {
+      alert(`이미 ${alreadyRentingNumber}번 우산을 대여 중입니다. 한 번에 하나만 빌릴 수 있어요.`);
+      return;
+    }
+
     const rentDate = serverTimestamp();
     const signatureData = hasRentSignature ? rentSignaturePad.toDataURL("image/png") : "";
 
@@ -300,19 +322,17 @@ let currentReturnData = null;
 let hasCopiedReturn = false;
 let hasSentPhoto = false;
 
-returnStudentIdInput.addEventListener("input", () => {
-  const id = returnStudentIdInput.value.trim();
-  if (studentsData[id]) {
-    returnStudentNameInput.value = studentsData[id];
-  }
-});
-
 findReturnBtn.addEventListener("click", async () => {
   const id = returnStudentIdInput.value.trim();
   const name = returnStudentNameInput.value.trim();
 
   if (!id || !name) {
     alert("학번과 이름을 모두 입력해주세요.");
+    return;
+  }
+
+  if (studentsData[id] !== name) {
+    alert("학번과 이름이 명렬표와 일치하지 않습니다. 다시 확인해주세요.");
     return;
   }
 
