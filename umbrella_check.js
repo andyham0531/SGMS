@@ -9,87 +9,21 @@ import {
   getDocs,
   query,
   where,
+  serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
-import { serverTimestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
 const TOTAL_UMBRELLAS = 15;
 const OVERDUE_DAYS = 3;
 const BAN_DAYS = 30;
 
-const studentIdInput = document.getElementById("studentId");
-const studentNameInput = document.getElementById("studentName");
-const checkBtn = document.getElementById("checkBtn");
-
-const returnBox = document.getElementById("returnBox");
-const returnTitle = document.getElementById("returnTitle");
-const returnNumber = document.getElementById("returnNumber");
-const returnDate = document.getElementById("returnDate");
-const returnDays = document.getElementById("returnDays");
-const doReturnBtn = document.getElementById("doReturnBtn");
-
-const rentBox = document.getElementById("rentBox");
-const availableList = document.getElementById("availableList");
-
-const banMsg = document.getElementById("banMsg");
-
-const signaturePad = document.getElementById("signaturePad");
-const clearSignatureBtn = document.getElementById("clearSignature");
-const sigCtx = signaturePad.getContext("2d");
-let isDrawing = false;
-let hasSignature = false;
-
 const umbrellaCol = collection(db, "umbrellas");
 const recordCol = collection(db, "umbrella_records");
 
-let currentNumberFound = null;
-let currentDataFound = null;
-
-studentIdInput.addEventListener("input", () => {
-  const id = studentIdInput.value.trim();
-  if (studentsData[id]) {
-    studentNameInput.value = studentsData[id];
-  }
-});
-
-// ===== 서명 캔버스 =====
-function getPos(e) {
-  const rect = signaturePad.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  return { x: clientX - rect.left, y: clientY - rect.top };
+function getManager(number) {
+  if (number <= 5) return { name: "박나은", phone: "010-7188-2462" };
+  if (number <= 10) return { name: "백승주", phone: "010-5716-1236" };
+  return { name: "이윤빈", phone: "010-5109-1236" };
 }
-function startDraw(e) {
-  isDrawing = true;
-  hasSignature = true;
-  const pos = getPos(e);
-  sigCtx.beginPath();
-  sigCtx.moveTo(pos.x, pos.y);
-  e.preventDefault();
-}
-function draw(e) {
-  if (!isDrawing) return;
-  const pos = getPos(e);
-  sigCtx.lineTo(pos.x, pos.y);
-  sigCtx.strokeStyle = "#1b2a4a";
-  sigCtx.lineWidth = 2;
-  sigCtx.lineCap = "round";
-  sigCtx.stroke();
-  e.preventDefault();
-}
-function endDraw() {
-  isDrawing = false;
-}
-signaturePad.addEventListener("mousedown", startDraw);
-signaturePad.addEventListener("mousemove", draw);
-signaturePad.addEventListener("mouseup", endDraw);
-signaturePad.addEventListener("mouseleave", endDraw);
-signaturePad.addEventListener("touchstart", startDraw);
-signaturePad.addEventListener("touchmove", draw);
-signaturePad.addEventListener("touchend", endDraw);
-clearSignatureBtn.addEventListener("click", () => {
-  sigCtx.clearRect(0, 0, signaturePad.width, signaturePad.height);
-  hasSignature = false;
-});
 
 function getPassedDays(time) {
   if (!time) return 0;
@@ -97,37 +31,252 @@ function getPassedDays(time) {
   return Math.floor((Date.now() - date.getTime()) / 86400000);
 }
 
-async function checkBan(studentId) {
-  const snap = await getDocs(query(recordCol, where("studentId", "==", studentId)));
-  const now = Date.now();
-  let banUntilDate = null;
-  snap.forEach((docSnap) => {
-    const d = docSnap.data();
-    if (d.banUntil) {
-      const until = d.banUntil.toDate ? d.banUntil.toDate() : new Date(d.banUntil);
-      if (until.getTime() > now && (!banUntilDate || until > banUntilDate)) {
-        banUntilDate = until;
-      }
-    }
-  });
-  return banUntilDate;
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("메시지가 복사되었습니다! 문자/카카오톡에 붙여넣어 보내주세요.");
+  } catch (err) {
+    alert("복사에 실패했어요. 아래 문구를 직접 선택해서 복사해주세요:\n\n" + text);
+  }
 }
 
-// ===== 조회 =====
-async function checkStatus() {
-  const studentId = studentIdInput.value.trim();
-  const studentName = studentNameInput.value.trim();
+// ===== 모드 전환 =====
+const modeRentBtn = document.getElementById("modeRentBtn");
+const modeReturnBtn = document.getElementById("modeReturnBtn");
+const rentFlow = document.getElementById("rentFlow");
+const returnFlow = document.getElementById("returnFlow");
 
-  if (!studentId || !studentName) {
+modeRentBtn.addEventListener("click", () => {
+  modeRentBtn.classList.add("active");
+  modeReturnBtn.classList.remove("active");
+  rentFlow.classList.remove("hidden");
+  returnFlow.classList.add("hidden");
+});
+
+modeReturnBtn.addEventListener("click", () => {
+  modeReturnBtn.classList.add("active");
+  modeRentBtn.classList.remove("active");
+  returnFlow.classList.remove("hidden");
+  rentFlow.classList.add("hidden");
+});
+
+// =====================================================
+// 대여 플로우
+// =====================================================
+const rentStudentIdInput = document.getElementById("rentStudentId");
+const rentStudentNameInput = document.getElementById("rentStudentName");
+const rentUmbrellaSelect = document.getElementById("rentUmbrellaSelect");
+
+const rentStep2 = document.getElementById("rentStep2");
+const rentManagerInfo = document.getElementById("rentManagerInfo");
+const rentMessageBox = document.getElementById("rentMessageBox");
+const rentCopyBtn = document.getElementById("rentCopyBtn");
+
+const rentStep3 = document.getElementById("rentStep3");
+const rentSignaturePad = document.getElementById("rentSignaturePad");
+const clearRentSignatureBtn = document.getElementById("clearRentSignature");
+const confirmRentBtn = document.getElementById("confirmRentBtn");
+const rentSigCtx = rentSignaturePad.getContext("2d");
+let hasRentSignature = false;
+let hasCopiedRent = false;
+
+rentStudentIdInput.addEventListener("input", () => {
+  const id = rentStudentIdInput.value.trim();
+  if (studentsData[id]) {
+    rentStudentNameInput.value = studentsData[id];
+  }
+  validateRentStep1();
+});
+rentStudentNameInput.addEventListener("input", validateRentStep1);
+rentUmbrellaSelect.addEventListener("change", validateRentStep1);
+
+async function loadAvailableUmbrellas() {
+  const snapshot = await getDocs(umbrellaCol);
+  const umbrellaData = {};
+  snapshot.forEach((docSnap) => {
+    umbrellaData[docSnap.id] = docSnap.data();
+  });
+
+  rentUmbrellaSelect.innerHTML = '<option value="">우산 번호 선택</option>';
+  for (let i = 1; i <= TOTAL_UMBRELLAS; i++) {
+    const data = umbrellaData[i];
+    const isAvailable = !data || !data.status || data.status === "대여가능";
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = isAvailable ? `${i}번 (대여가능)` : `${i}번 (${data.status})`;
+    if (!isAvailable) opt.disabled = true;
+    rentUmbrellaSelect.appendChild(opt);
+  }
+}
+loadAvailableUmbrellas();
+
+function validateRentStep1() {
+  const id = rentStudentIdInput.value.trim();
+  const name = rentStudentNameInput.value.trim();
+  const number = rentUmbrellaSelect.value;
+
+  if (!id || !name || !number) {
+    rentStep2.classList.add("hidden");
+    rentStep3.classList.add("hidden");
+    hasCopiedRent = false;
+    return;
+  }
+
+  const manager = getManager(Number(number));
+  rentManagerInfo.textContent = `${manager.name} 담당 · ${manager.phone}`;
+  rentMessageBox.value = `${id} ${name} ${number}번 우산 대여합니다`;
+  rentStep2.classList.remove("hidden");
+
+  // 학번/이름/번호가 바뀌면 복사 절차부터 다시
+  hasCopiedRent = false;
+  rentStep3.classList.add("hidden");
+}
+
+rentCopyBtn.addEventListener("click", async () => {
+  await copyText(rentMessageBox.value);
+  hasCopiedRent = true;
+  rentSigCtx.clearRect(0, 0, rentSignaturePad.width, rentSignaturePad.height);
+  hasRentSignature = false;
+  rentStep3.classList.remove("hidden");
+});
+
+// 서명 캔버스
+function setupSignaturePad(canvas, ctx, onDraw) {
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: clientX - rect.left, y: clientY - rect.top };
+  }
+  let drawing = false;
+  function startDraw(e) {
+    drawing = true;
+    onDraw(true);
+    const pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    e.preventDefault();
+  }
+  function draw(e) {
+    if (!drawing) return;
+    const pos = getPos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = "#1b2a4a";
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.stroke();
+    e.preventDefault();
+  }
+  function endDraw() {
+    drawing = false;
+  }
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", endDraw);
+  canvas.addEventListener("mouseleave", endDraw);
+  canvas.addEventListener("touchstart", startDraw);
+  canvas.addEventListener("touchmove", draw);
+  canvas.addEventListener("touchend", endDraw);
+}
+setupSignaturePad(rentSignaturePad, rentSigCtx, (v) => (hasRentSignature = v));
+
+clearRentSignatureBtn.addEventListener("click", () => {
+  rentSigCtx.clearRect(0, 0, rentSignaturePad.width, rentSignaturePad.height);
+  hasRentSignature = false;
+});
+
+confirmRentBtn.addEventListener("click", async () => {
+  if (!hasCopiedRent) {
+    alert("먼저 담당자에게 메시지를 복사해서 보내주세요.");
+    return;
+  }
+  if (!hasRentSignature) {
+    const skip = confirm("서명이 없습니다. 서명 없이 진행하시겠습니까?");
+    if (!skip) return;
+  }
+
+  const id = rentStudentIdInput.value.trim();
+  const name = rentStudentNameInput.value.trim();
+  const number = Number(rentUmbrellaSelect.value);
+  const manager = getManager(number);
+
+  confirmRentBtn.disabled = true;
+  try {
+    await setDoc(doc(db, "umbrellas", String(number)), {
+      number,
+      status: "대여중",
+      studentId: id,
+      studentName: name,
+      manager: manager.name,
+      agreementSignature: hasRentSignature ? rentSignaturePad.toDataURL("image/png") : "",
+      rentDate: serverTimestamp(),
+    });
+
+    alert(`${number}번 우산 대여가 완료되었습니다! 잊지 말고 ${manager.name} 담당자에게 문자 보내는 것도 확인해주세요.`);
+
+    rentStudentIdInput.value = "";
+    rentStudentNameInput.value = "";
+    rentUmbrellaSelect.value = "";
+    rentStep2.classList.add("hidden");
+    rentStep3.classList.add("hidden");
+    hasCopiedRent = false;
+    loadAvailableUmbrellas();
+  } finally {
+    confirmRentBtn.disabled = false;
+  }
+});
+
+// =====================================================
+// 반납 플로우
+// =====================================================
+const returnStudentIdInput = document.getElementById("returnStudentId");
+const returnStudentNameInput = document.getElementById("returnStudentName");
+const findReturnBtn = document.getElementById("findReturnBtn");
+
+const returnStep2 = document.getElementById("returnStep2");
+const returnFoundTitle = document.getElementById("returnFoundTitle");
+const returnManagerInfo = document.getElementById("returnManagerInfo");
+const returnMessageBox = document.getElementById("returnMessageBox");
+const returnCopyBtn = document.getElementById("returnCopyBtn");
+
+const returnStep3 = document.getElementById("returnStep3");
+const returnPhotoInput = document.getElementById("returnPhotoInput");
+const sendPhotoBtn = document.getElementById("sendPhotoBtn");
+
+const returnStep4 = document.getElementById("returnStep4");
+const finalReturnBtn = document.getElementById("finalReturnBtn");
+
+const returnBanMsg = document.getElementById("returnBanMsg");
+
+let currentReturnNumber = null;
+let currentReturnData = null;
+let hasCopiedReturn = false;
+let hasSentPhoto = false;
+
+returnStudentIdInput.addEventListener("input", () => {
+  const id = returnStudentIdInput.value.trim();
+  if (studentsData[id]) {
+    returnStudentNameInput.value = studentsData[id];
+  }
+});
+
+findReturnBtn.addEventListener("click", async () => {
+  const id = returnStudentIdInput.value.trim();
+  const name = returnStudentNameInput.value.trim();
+
+  if (!id || !name) {
     alert("학번과 이름을 모두 입력해주세요.");
     return;
   }
 
-  returnBox.classList.add("hidden");
-  rentBox.classList.add("hidden");
-  banMsg.classList.add("hidden");
+  returnStep2.classList.add("hidden");
+  returnStep3.classList.add("hidden");
+  returnStep4.classList.add("hidden");
+  returnBanMsg.classList.add("hidden");
+  hasCopiedReturn = false;
+  hasSentPhoto = false;
 
-  checkBtn.disabled = true;
+  findReturnBtn.disabled = true;
   try {
     const snapshot = await getDocs(umbrellaCol);
     let found = null;
@@ -135,143 +284,114 @@ async function checkStatus() {
 
     snapshot.forEach((docSnap) => {
       const data = docSnap.data();
-      if (data.studentId === studentId && data.status === "대여중") {
+      if (data.studentId === id && data.status === "대여중") {
         found = data;
         foundNumber = docSnap.id;
       }
     });
 
-    if (found) {
-      // 대여중 -> 반납 화면
-      currentNumberFound = foundNumber;
-      currentDataFound = found;
-
-      const days = getPassedDays(found.rentDate);
-      const dateStr = found.rentDate && found.rentDate.toDate
-        ? found.rentDate.toDate().toLocaleDateString("ko-KR")
-        : "-";
-
-      returnTitle.textContent = `${found.studentName} (${studentId})`;
-      returnNumber.textContent = `${foundNumber}번`;
-      returnDate.textContent = dateStr;
-      returnDays.textContent = days >= OVERDUE_DAYS ? `${days}일째 ⚠️ 연체` : `${days}일째`;
-
-      sigCtx.clearRect(0, 0, signaturePad.width, signaturePad.height);
-      hasSignature = false;
-
-      returnBox.classList.remove("hidden");
+    if (!found) {
+      alert("현재 대여중인 우산이 없습니다.");
       return;
     }
 
-    // 대여중 아님 -> 대여 금지 여부 확인
-    const banUntil = await checkBan(studentId);
-    if (banUntil) {
-      banMsg.textContent = `연체 이력으로 인해 현재 대여가 제한된 상태입니다. (해제일: ${banUntil.toLocaleDateString("ko-KR")})`;
-      banMsg.classList.remove("hidden");
-      return;
-    }
+    currentReturnNumber = foundNumber;
+    currentReturnData = found;
 
-    // 대여 가능한 우산 목록 표시
-    const umbrellaData = {};
-    snapshot.forEach((docSnap) => {
-      umbrellaData[docSnap.id] = docSnap.data();
-    });
+    const manager = getManager(Number(foundNumber));
+    const days = getPassedDays(found.rentDate);
 
-    availableList.innerHTML = "";
-    let anyAvailable = false;
+    returnFoundTitle.textContent = `${foundNumber}번 우산 · ${days}일째 대여중`;
+    returnManagerInfo.textContent = `${manager.name} 담당 · ${manager.phone}`;
+    returnMessageBox.value = `${id} ${name} ${foundNumber}번 우산 반납합니다`;
 
-    for (let i = 1; i <= TOTAL_UMBRELLAS; i++) {
-      const data = umbrellaData[i];
-      if (data && data.status && data.status !== "대여가능") continue;
-
-      anyAvailable = true;
-      const card = document.createElement("div");
-      card.className = "umbrellaCard available";
-      card.innerHTML = `<div class="umbrellaNumber">${i}번</div><div class="umbrellaState">대여가능</div>`;
-      card.addEventListener("click", () => rentUmbrella(i, studentId, studentName));
-      availableList.appendChild(card);
-    }
-
-    if (!anyAvailable) {
-      availableList.innerHTML = "<p>지금 대여 가능한 우산이 없습니다.</p>";
-    }
-
-    rentBox.classList.remove("hidden");
-  } catch (err) {
-    console.error(err);
-    alert("조회 중 오류가 발생했습니다. 콘솔을 확인해주세요.");
+    returnStep2.classList.remove("hidden");
   } finally {
-    checkBtn.disabled = false;
+    findReturnBtn.disabled = false;
   }
-}
+});
 
-// ===== 셀프 대여 =====
-async function rentUmbrella(number, studentId, studentName) {
-  const ok = confirm(`${number}번 우산을 대여하시겠습니까?`);
-  if (!ok) return;
+returnCopyBtn.addEventListener("click", async () => {
+  await copyText(returnMessageBox.value);
+  hasCopiedReturn = true;
+  returnPhotoInput.value = "";
+  returnStep3.classList.remove("hidden");
+});
 
-  await setDoc(doc(db, "umbrellas", String(number)), {
-    number,
-    status: "대여중",
-    studentId,
-    studentName,
-    manager: "본인(셀프)",
-    rentDate: serverTimestamp(),
-  });
-
-  alert(`${number}번 우산이 대여되었습니다!`);
-  rentBox.classList.add("hidden");
-}
-
-// ===== 셀프 반납 =====
-doReturnBtn.addEventListener("click", async () => {
-  if (!currentNumberFound || !currentDataFound) return;
-
-  if (!hasSignature) {
-    const skip = confirm("서명이 없습니다. 서명 없이 반납 처리하시겠습니까?");
-    if (!skip) return;
+sendPhotoBtn.addEventListener("click", async () => {
+  const file = returnPhotoInput.files[0];
+  if (!file) {
+    alert("반납 사진을 먼저 첨부해주세요.");
+    return;
   }
 
-  doReturnBtn.disabled = true;
+  const manager = getManager(Number(currentReturnNumber));
+  const shareText = returnMessageBox.value;
+
   try {
-    const overdueDays = getPassedDays(currentDataFound.rentDate);
-    const isOverdue = overdueDays >= OVERDUE_DAYS;
-    const signatureData = hasSignature ? signaturePad.toDataURL("image/png") : "";
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], text: shareText });
+    } else {
+      alert("이 기기에서는 사진 자동 공유가 지원되지 않아요.\n카카오톡/문자로 직접 사진을 보내주세요: " + manager.name + " " + manager.phone);
+    }
+  } catch (err) {
+    // 공유 취소해도 다음 단계로는 진행 가능
+  }
 
-    await setDoc(doc(db, "umbrellas", String(currentNumberFound)), {
-      number: currentNumberFound,
+  hasSentPhoto = true;
+  returnStep4.classList.remove("hidden");
+});
+
+finalReturnBtn.addEventListener("click", async () => {
+  if (!hasCopiedReturn) {
+    alert("먼저 담당자에게 메시지를 복사해서 보내주세요.");
+    return;
+  }
+  if (!hasSentPhoto) {
+    alert("먼저 반납 사진을 담당자에게 보내주세요.");
+    return;
+  }
+
+  finalReturnBtn.disabled = true;
+  try {
+    const overdueDays = getPassedDays(currentReturnData.rentDate);
+    const isOverdue = overdueDays >= OVERDUE_DAYS;
+
+    await setDoc(doc(db, "umbrellas", String(currentReturnNumber)), {
+      number: Number(currentReturnNumber),
       status: "대여가능",
     });
 
     await addDoc(recordCol, {
-      umbrellaNumber: currentNumberFound,
-      studentId: currentDataFound.studentId,
-      studentName: currentDataFound.studentName,
-      manager: "본인(셀프)",
-      rentDate: currentDataFound.rentDate || null,
+      umbrellaNumber: Number(currentReturnNumber),
+      studentId: currentReturnData.studentId,
+      studentName: currentReturnData.studentName,
+      manager: getManager(Number(currentReturnNumber)).name,
+      rentDate: currentReturnData.rentDate || null,
       returnDate: serverTimestamp(),
       overdueDays: isOverdue ? overdueDays : 0,
       isOverdue,
       banUntil: isOverdue ? new Date(Date.now() + BAN_DAYS * 86400000) : null,
-      signature: signatureData,
+      signature: "",
       status: "반납완료",
     });
 
-    returnBox.classList.add("hidden");
-    currentNumberFound = null;
-    currentDataFound = null;
-
     if (isOverdue) {
-      alert(`반납되었습니다.\n연체(${overdueDays}일)로 인해 ${BAN_DAYS}일간 대여가 제한됩니다.`);
+      alert(`반납 처리되었습니다.\n연체(${overdueDays}일)로 인해 ${BAN_DAYS}일간 대여가 제한됩니다.`);
     } else {
-      alert("반납되었습니다. 감사합니다!");
+      alert("반납이 완료되었습니다. 감사합니다!");
     }
-  } finally {
-    doReturnBtn.disabled = false;
-  }
-});
 
-checkBtn.addEventListener("click", checkStatus);
-studentNameInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") checkStatus();
+    returnStudentIdInput.value = "";
+    returnStudentNameInput.value = "";
+    returnStep2.classList.add("hidden");
+    returnStep3.classList.add("hidden");
+    returnStep4.classList.add("hidden");
+    currentReturnNumber = null;
+    currentReturnData = null;
+    hasCopiedReturn = false;
+    hasSentPhoto = false;
+  } finally {
+    finalReturnBtn.disabled = false;
+  }
 });
