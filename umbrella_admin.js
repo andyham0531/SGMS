@@ -116,10 +116,21 @@ clearRentSignatureBtn.addEventListener("click", () => {
   hasRentSignature = false;
 });
 
+// 경과일 계산: 토요일은 카운트에서 제외 (금요일 대여 → 월요일 반납 = 2일)
 function getPassedDays(time) {
   if (!time) return 0;
-  const date = time.toDate ? time.toDate() : new Date(time);
-  return Math.floor((Date.now() - date.getTime()) / 86400000);
+  const start = time.toDate ? time.toDate() : new Date(time);
+  const now = new Date();
+  const rawDays = Math.floor((now.getTime() - start.getTime()) / 86400000);
+
+  let saturdays = 0;
+  const cursor = new Date(start);
+  for (let i = 0; i < rawDays; i++) {
+    cursor.setDate(cursor.getDate() + 1);
+    if (cursor.getDay() === 6) saturdays++;
+  }
+
+  return Math.max(0, rawDays - saturdays);
 }
 
 // 화면 표시용: 대여한 날을 1일째로 셈
