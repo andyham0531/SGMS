@@ -22,7 +22,7 @@ const recordCol = collection(db, "umbrella_records");
 
 function getManager(number) {
   if (number <= 5) return { name: "박나은", phone: "010-7188-2462" };
-  if (number <= 10) return { name: "백승주", phone: "010-5716-1236" };
+  if (number <= 10) return { name: "백승주", phone: "010-5716-8514" };
   return { name: "이윤빈", phone: "010-5109-1236" };
 }
 
