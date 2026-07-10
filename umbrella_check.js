@@ -310,7 +310,9 @@ const returnSmsLink = document.getElementById("returnSmsLink");
 
 const returnStep3 = document.getElementById("returnStep3");
 const returnPhotoInput = document.getElementById("returnPhotoInput");
-const sendPhotoBtn = document.getElementById("sendPhotoBtn");
+const copyPhotoBtn = document.getElementById("copyPhotoBtn");
+const returnPhotoSmsLink = document.getElementById("returnPhotoSmsLink");
+const pastePhotoHint = document.getElementById("pastePhotoHint");
 
 const returnStep4 = document.getElementById("returnStep4");
 const finalReturnBtn = document.getElementById("finalReturnBtn");
@@ -340,6 +342,8 @@ findReturnBtn.addEventListener("click", async () => {
   returnStep3.classList.add("hidden");
   returnStep4.classList.add("hidden");
   returnBanMsg.classList.add("hidden");
+  returnPhotoSmsLink.classList.add("hidden");
+  pastePhotoHint.classList.add("hidden");
   hasCopiedReturn = false;
   hasSentPhoto = false;
 
@@ -372,6 +376,7 @@ findReturnBtn.addEventListener("click", async () => {
     returnManagerInfo.textContent = `${manager.name} 담당 · ${manager.phone}`;
     returnMessageBox.value = `${id} ${name} ${foundNumber}번 우산 반납합니다`;
     returnSmsLink.href = smsHref(manager.phone);
+    returnPhotoSmsLink.href = smsHref(manager.phone);
 
     returnStep2.classList.remove("hidden");
   } finally {
@@ -383,43 +388,30 @@ returnCopyBtn.addEventListener("click", async () => {
   await copyText(returnMessageBox.value);
   hasCopiedReturn = true;
   returnPhotoInput.value = "";
+  returnPhotoSmsLink.classList.add("hidden");
+  pastePhotoHint.classList.add("hidden");
   returnStep3.classList.remove("hidden");
 });
 
-sendPhotoBtn.addEventListener("click", async () => {
+copyPhotoBtn.addEventListener("click", async () => {
   const file = returnPhotoInput.files[0];
   if (!file) {
     alert("반납 사진을 먼저 첨부해주세요.");
     return;
   }
 
-  const manager = getManager(Number(currentReturnNumber));
-  const shareText = returnMessageBox.value;
-
-  const canShareFile =
-    typeof navigator.canShare === "function" && navigator.canShare({ files: [file] });
-
-  if (canShareFile) {
-    try {
-      await navigator.share({ files: [file], text: shareText });
-    } catch (err) {
-      // 공유 시트에서 취소해도 반납 진행은 계속 가능
-    }
-  } else if (navigator.share) {
-    // 파일 공유는 안 되지만 텍스트 공유는 가능한 경우
-    try {
-      await navigator.share({ text: shareText });
-    } catch (err) {
-      // 취소해도 진행 가능
-    }
-    alert("이 기기에서는 사진 자동 첨부가 지원되지 않아요.\n공유 시트에서 대화를 연 뒤 사진을 직접 첨부해서 보내주세요.");
-  } else {
-    alert(
-      "이 기기/브라우저에서는 사진 자동 공유가 지원되지 않아요.\n" +
-        `카카오톡이나 문자로 ${manager.name} 담당자(${manager.phone})에게 직접 사진을 보내주세요.`
-    );
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
+    alert("사진이 복사되었습니다! 문자 앱을 열고 붙여넣어 주세요.");
+  } catch (err) {
+    alert("이 기기/브라우저에서는 사진 복사가 지원되지 않아요.\n문자 앱을 연 뒤 사진을 직접 첨부해서 보내주세요.");
   }
 
+  returnPhotoSmsLink.classList.remove("hidden");
+  pastePhotoHint.classList.remove("hidden");
+});
+
+returnPhotoSmsLink.addEventListener("click", () => {
   hasSentPhoto = true;
   returnStep4.classList.remove("hidden");
 });
