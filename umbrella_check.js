@@ -396,14 +396,28 @@ sendPhotoBtn.addEventListener("click", async () => {
   const manager = getManager(Number(currentReturnNumber));
   const shareText = returnMessageBox.value;
 
-  try {
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+  const canShareFile =
+    typeof navigator.canShare === "function" && navigator.canShare({ files: [file] });
+
+  if (canShareFile) {
+    try {
       await navigator.share({ files: [file], text: shareText });
-    } else {
-      alert("이 기기에서는 사진 자동 공유가 지원되지 않아요.\n카카오톡/문자로 직접 사진을 보내주세요: " + manager.name + " " + manager.phone);
+    } catch (err) {
+      // 공유 시트에서 취소해도 반납 진행은 계속 가능
     }
-  } catch (err) {
-    // 공유 취소해도 다음 단계로는 진행 가능
+  } else if (navigator.share) {
+    // 파일 공유는 안 되지만 텍스트 공유는 가능한 경우
+    try {
+      await navigator.share({ text: shareText });
+    } catch (err) {
+      // 취소해도 진행 가능
+    }
+    alert("이 기기에서는 사진 자동 첨부가 지원되지 않아요.\n공유 시트에서 대화를 연 뒤 사진을 직접 첨부해서 보내주세요.");
+  } else {
+    alert(
+      "이 기기/브라우저에서는 사진 자동 공유가 지원되지 않아요.\n" +
+        `카카오톡이나 문자로 ${manager.name} 담당자(${manager.phone})에게 직접 사진을 보내주세요.`
+    );
   }
 
   hasSentPhoto = true;
