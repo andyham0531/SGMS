@@ -92,10 +92,10 @@ function typeLabel(type) {
   return type === "school" ? "전체 일정" : "학생회 일정";
 }
 
-function eventCardHTML(e, { withDateBadge } = {}) {
+function eventCardHTML(e, { withDateBadge, jumpable } = {}) {
   const type = e.type === "school" ? "school" : "council";
   return `
-    <div class="eventCard ${type}">
+    <div class="eventCard ${type}" ${jumpable ? `data-jump-date="${e.date}"` : ""}>
       <div class="eventTop">
         <div>
           <span class="eventTypeBadge ${type}">${typeLabel(type)}</span>
@@ -194,6 +194,7 @@ function renderCalendar() {
     const more = moreCount > 0 ? `<span class="dayEventMore">+${moreCount}개 더</span>` : "";
     const holidayHtml = holidayName ? `<span class="holidayLabel">${holidayName}</span>` : "";
 
+    cell.dataset.key = key;
     cell.innerHTML = `<span class="dayNum ${numClass}">${d}</span>${holidayHtml}${chips}${more}`;
     cell.addEventListener("click", () => openDayModal(key));
     calGrid.appendChild(cell);
@@ -207,7 +208,7 @@ function renderUpcoming() {
     .sort((a, b) => a.date.localeCompare(b.date));
 
   upcomingList.innerHTML = upcoming.length
-    ? upcoming.map((e) => eventCardHTML(e, { withDateBadge: true })).join("")
+    ? upcoming.map((e) => eventCardHTML(e, { withDateBadge: true, jumpable: true })).join("")
     : `<div class="card"><p class="emptyMsg">등록된 일정이 없어요</p></div>`;
 }
 
@@ -269,8 +270,33 @@ document.addEventListener("click", async (e) => {
       dayModal.classList.remove("hidden");
     }
     startEdit(ev);
+    return;
+  }
+
+  // "다가오는 일정" 카드를 눌렀을 때 (수정/삭제 버튼이 아닌 카드 본문) -> 달력에서 해당 날짜로 이동
+  const jumpCard = e.target.closest("[data-jump-date]");
+  if (jumpCard) {
+    jumpToDate(jumpCard.dataset.jumpDate);
   }
 });
+
+function jumpToDate(key) {
+  const [y, m] = key.split("-").map(Number);
+  cursor = new Date(y, m - 1, 1);
+  renderCalendar();
+
+  const calCard = document.querySelector(".calCard");
+  if (calCard) calCard.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  // 살짝 딜레이 후 해당 날짜 칸 강조 (렌더링 완료 대기)
+  setTimeout(() => {
+    const cell = calGrid.querySelector(`[data-key="${key}"]`);
+    if (cell) {
+      cell.classList.add("jump-highlight");
+      setTimeout(() => cell.classList.remove("jump-highlight"), 1800);
+    }
+  }, 300);
+}
 
 // 등록 / 수정 저장
 saveBtn.addEventListener("click", async () => {
