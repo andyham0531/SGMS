@@ -556,6 +556,12 @@ td{
     border-radius:8px;
 }
 
+.adjustCell{
+    display:flex;
+    gap:6px;
+    justify-content:center;
+}
+
 /* ===== 우산 대여 이력 표 ===== */
 .recordsContainer{
     max-width:700px;
@@ -698,4 +704,9 @@ td{
 #returnPhotoInput{
     width:100%;
     margin-top:6px;
+}
+
+/* ===== 학생회 일정 메뉴 버튼 ===== */
+.scheduleBtn{
+    background:#34c759;
 }
