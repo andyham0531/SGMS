@@ -177,11 +177,16 @@ function renderCalendar() {
 
     const cell = document.createElement("button");
     cell.type = "button";
-    cell.className = "dayCell" + (key === today ? " today" : "") + (holidayName ? " holiday" : "");
+    const dayEvents = eventsByDate(key);
+    const hasSchool = dayEvents.some((e) => e.type === "school");
+    const hasCouncil = dayEvents.some((e) => e.type !== "school");
+    let typeClass = "";
+    if (hasSchool) typeClass = " has-school";
+    else if (hasCouncil) typeClass = " has-council";
+    cell.className = "dayCell" + (key === today ? " today" : "") + typeClass;
 
     const numClass = isSun ? "sun" : (isSat ? "sat" : "");
 
-    const dayEvents = eventsByDate(key);
     const chips = dayEvents.slice(0, MAX_CHIPS).map(
       (e) => `<span class="dayEventChip ${e.type === "school" ? "school" : "council"}">${escapeHtml(e.title)}</span>`
     ).join("");
