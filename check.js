@@ -35,7 +35,8 @@ async function checkStudent() {
     }
 
     const count = studentSnap.exists() ? (studentSnap.data().count || 0) : 0;
-    const penalty = Math.floor(count / 3) * 2;
+    // 2회당 1점
+    const penalty = Math.floor(count / 2);
 
     resultName.textContent = `${name} (${studentId})`;
     resultCount.textContent = `${count}회`;
