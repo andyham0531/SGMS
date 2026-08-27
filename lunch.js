@@ -45,7 +45,8 @@ onSnapshot(studentsCol, (snapshot) => {
 
   students.forEach((data) => {
     const tr = document.createElement("tr");
-    const penalty = Math.floor((data.count || 0) / 3) * 2;
+    // 2회당 1점
+    const penalty = Math.floor((data.count || 0) / 2);
     const isSelected = data.studentId === selectedStudentId;
 
     tr.innerHTML = `
@@ -172,11 +173,12 @@ studentTable.addEventListener("click", async (e) => {
   if (!studentSnap.exists()) return;
 
   const currentCount = studentSnap.data().count || 0;
-  const penalty = Math.floor(currentCount / 3) * 2;
+  // 2회당 1점
+  const penalty = Math.floor(currentCount / 2);
 
   if (penalty === 0) return;
 
-  const remain = currentCount % 3;
+  const remain = currentCount % 2;
 
   const ok = confirm(
     `${studentSnap.data().studentName} 학생에게 벌점 ${penalty}점을 부여하시겠습니까?\n\n처리 후 남는 횟수 : ${remain}회`
