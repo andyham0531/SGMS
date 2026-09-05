@@ -163,6 +163,22 @@ td{
     font-weight:500;
 }
 
+.madeByFooter{
+    position:fixed;
+    left:50%;
+    bottom:14px;
+    transform:translateX(-50%);
+    background:rgba(27,58,107,.85);
+    color:rgba(255,255,255,.85);
+    font-size:10.5px;
+    font-weight:500;
+    padding:5px 13px;
+    border-radius:999px;
+    pointer-events:none;
+    z-index:5;
+    white-space:nowrap;
+}
+
 .penaltyCell{
     color:var(--danger);
     font-weight:700;
@@ -687,6 +703,12 @@ select{
     margin-bottom:9px;
 }
 
+a.eventCard{
+    display:block;
+    color:inherit;
+    text-decoration:none;
+}
+
 .eventTop{
     display:flex;
     justify-content:space-between;
@@ -761,9 +783,4 @@ body.page-navy{
 body.page-navy h1{ color:#FFFFFF; }
 body.page-navy p{ color:rgba(255,255,255,.72); }
 body.page-navy .backLink{ color:#CFE0F5; }
-body.page-navy .madeBy span{ color:rgba(255,255,255,.6); }
 body.page-navy .sectionLabel{ color:rgba(255,255,255,.6); }
-body.page-navy .legendRow{ color:rgba(255,255,255,.75); }
-body.page-navy .reasonGroup{ color:rgba(255,255,255,.85); }
-body.page-navy .warning{ color:#FFD9D3; }
-body.page-navy .smallLabel{ color:rgba(255,255,255,.65); }
