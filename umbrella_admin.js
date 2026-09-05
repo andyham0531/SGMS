@@ -52,6 +52,24 @@ let umbrellaData = {};
 const umbrellaCol = collection(db, "umbrellas");
 // 대여/반납/분실 이력 로그 = "umbrella_records" 컬렉션
 const recordCol = collection(db, "umbrella_records");
+// 담당자 목록 = "umbrella_managers" 컬렉션 (관리자 페이지에서 추가/삭제)
+const managersCol = collection(db, "umbrella_managers");
+
+// 담당자 목록 실시간 반영 (관리자 페이지에서 추가/삭제하면 여기도 자동 갱신)
+onSnapshot(managersCol, (snapshot) => {
+  const prevValue = managerSelect.value;
+  managerSelect.innerHTML = '<option value="">담당자 선택</option>';
+  snapshot.docs.forEach((docSnap) => {
+    const data = docSnap.data();
+    const opt = document.createElement("option");
+    opt.value = data.name;
+    opt.textContent = data.name;
+    managerSelect.appendChild(opt);
+  });
+  if ([...managerSelect.options].some((o) => o.value === prevValue)) {
+    managerSelect.value = prevValue;
+  }
+});
 
 managerSelect.addEventListener("change", () => {
   currentManager = managerSelect.value;
