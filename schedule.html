@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SGMS - 학생회 일정</title>
+<title>서울미고 학생회 - 일정</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -12,10 +12,10 @@
 <style>
   .calCard{
     background:white;
-    border-radius:18px;
+    border-radius:var(--radius);
     padding:16px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-    margin-top:15px;
+    border:1px solid var(--line);
+    margin-top:14px;
   }
   .calNav{
     display:flex;
@@ -25,16 +25,16 @@
   }
   .calNavBtn{
     width:auto;
-    padding:8px 14px;
-    font-size:16px;
-    font-weight:700;
-    background:#f4f4f4;
-    color:#333;
-    border-radius:10px;
+    padding:7px 13px;
+    font-size:15px;
+    font-weight:600;
+    background:var(--navy-soft2);
+    color:var(--navy);
   }
   .monthLabel{
-    font-size:18px;
+    font-size:15.5px;
     font-weight:700;
+    color:var(--ink);
   }
   .weekRow{
     display:grid;
@@ -43,42 +43,41 @@
   }
   .weekCell{
     text-align:center;
-    font-size:12px;
-    color:#8e8e93;
+    font-size:11.5px;
+    color:var(--sub);
     font-weight:600;
   }
-  .weekCell.sun{ color:#ff3b30; }
-  .weekCell.sat{ color:#007AFF; }
+  .weekCell.sun{ color:var(--danger); }
+  .weekCell.sat{ color:var(--navy-mid); }
   .calGrid{
     display:grid;
     grid-template-columns:repeat(7,1fr);
     gap:3px;
   }
   .dayCell{
-    min-height:92px;
-    border:none;
+    min-height:88px;
+    border:1px solid transparent;
     border-radius:8px;
-    background:#f9f9fb;
+    background:var(--navy-soft2);
     display:flex;
     flex-direction:column;
     align-items:stretch;
     padding:5px 3px;
     gap:2px;
     font-size:12px;
-    color:#333;
+    color:var(--ink);
     cursor:pointer;
     position:relative;
     overflow:hidden;
   }
   .dayCell.has-school{
-    background:#ffe3e1;
+    background:var(--danger-soft);
   }
   .dayCell.has-council{
-    background:#e0ecff;
+    background:var(--navy-soft);
   }
-  .dayCell.today .dayNum{
-    background:#007AFF;
-    color:white !important;
+  .dayCell.today{
+    border-color:var(--navy);
   }
   .dayCell.blank{
     visibility:hidden;
@@ -87,20 +86,16 @@
   .dayNum{
     font-size:12px;
     font-weight:600;
-    width:20px;
-    height:20px;
-    line-height:20px;
-    text-align:center;
-    border-radius:50%;
     align-self:flex-start;
     margin-bottom:2px;
+    color:var(--ink);
   }
-  .dayNum.sun{ color:#ff3b30; }
-  .dayNum.sat{ color:#007AFF; }
+  .dayNum.sun{ color:var(--danger); }
+  .dayNum.sat{ color:var(--navy-mid); }
   .holidayLabel{
     font-size:8.5px;
-    color:#ff3b30;
-    font-weight:700;
+    color:var(--danger);
+    font-weight:600;
     margin-top:-3px;
     white-space:nowrap;
     overflow:hidden;
@@ -108,64 +103,50 @@
   }
   .dayEventChip{
     font-size:10px;
-    font-weight:700;
+    font-weight:600;
     line-height:1.35;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
     text-align:left;
   }
-  .dayEventChip.council{ color:#007AFF; }
-  .dayEventChip.school{ color:#ff3b30; }
+  .dayEventChip.council{ color:var(--navy); }
+  .dayEventChip.school{ color:var(--danger); }
   .dayEventMore{
     font-size:9.5px;
-    color:#8e8e93;
+    color:var(--sub);
     padding:0 4px;
     font-weight:600;
   }
-  .dayCell.jump-highlight{
-    animation:jumpPulse 0.9s ease 2;
-    z-index:1;
-  }
-  @keyframes jumpPulse{
-    0%{ box-shadow:0 0 0 0 rgba(0,122,255,.6); }
-    70%{ box-shadow:0 0 0 8px rgba(0,122,255,0); }
-    100%{ box-shadow:0 0 0 0 rgba(0,122,255,0); }
-  }
-  .eventCard[data-jump-date]{
-    cursor:pointer;
-  }
-    font-size:13px;
+  .sectionLabel{
+    font-size:12.5px;
     font-weight:700;
-    color:#8e8e93;
-    margin:22px 0 10px 4px;
+    color:var(--sub);
+    margin:20px 0 10px 2px;
   }
   .legendRow{
     display:flex;
-    gap:14px;
+    gap:16px;
     justify-content:center;
     margin-top:12px;
     font-size:12px;
-    color:#555;
+    color:var(--sub);
   }
   .legendDot{
     display:inline-block;
-    width:9px;
-    height:9px;
+    width:8px;
+    height:8px;
     border-radius:50%;
-    margin-right:4px;
+    margin-right:5px;
     vertical-align:middle;
   }
   .eventCard{
     background:white;
-    border-radius:14px;
+    border-radius:12px;
     padding:14px 16px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-    margin-bottom:10px;
-    border-left:4px solid transparent;
+    border:1px solid var(--line);
+    margin-bottom:9px;
   }
-  .eventCard.council{ border-left-color:#007AFF; }
-  .eventCard.school{ border-left-color:#ff3b30; }
   .eventTop{
     display:flex;
     justify-content:space-between;
@@ -180,9 +161,10 @@
   .editOneBtn{
     width:auto;
     padding:6px 12px;
-    font-size:13px;
-    background:#8e8e93;
-    border-radius:8px;
+    font-size:12.5px;
+    background:var(--navy-soft2);
+    color:var(--navy-mid);
+    font-weight:600;
   }
   .eventTypeBadge{
     display:inline-block;
@@ -193,56 +175,57 @@
     margin-bottom:6px;
     color:white;
   }
-  .eventTypeBadge.council{ background:#007AFF; }
-  .eventTypeBadge.school{ background:#ff3b30; }
+  .eventTypeBadge.council{ background:var(--navy); }
+  .eventTypeBadge.school{ background:var(--danger); }
   .eventDateBadge{
     display:inline-block;
-    background:#8e8e93;
-    color:white;
+    background:var(--navy-soft2);
+    color:var(--sub);
     font-size:11px;
-    font-weight:700;
+    font-weight:600;
     padding:2px 9px;
     border-radius:999px;
     margin-bottom:6px;
     margin-left:4px;
   }
   .eventTitle{
-    font-size:16px;
+    font-size:15.5px;
     font-weight:700;
+    color:var(--ink);
   }
   .eventMeta{
     font-size:12.5px;
-    color:#666;
+    color:var(--sub);
     margin-top:2px;
   }
   .eventMemo{
     font-size:12.5px;
-    color:#444;
+    color:var(--ink);
     margin-top:6px;
     line-height:1.5;
     white-space:pre-wrap;
   }
   .emptyMsg{
     text-align:center;
-    color:#999;
+    color:var(--sub);
     font-size:13px;
     padding:16px 0;
   }
-  /* 날짜 클릭 모달 */
   #dayModal .modalCard{
     max-height:85vh;
     overflow-y:auto;
   }
   #dayModal h3{
     margin-bottom:14px;
+    color:var(--navy);
   }
   #modalEventList{
     margin-bottom:16px;
   }
   #modalEventList .eventCard{
-    box-shadow:none;
-    background:#f9f9fb;
+    background:var(--navy-soft2);
     padding:12px 14px;
+    border:none;
   }
   .typeSwitch{
     display:flex;
@@ -251,20 +234,33 @@
   }
   .typeBtn{
     flex:1;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    background:#e5e5ea;
-    color:#555;
-    font-weight:700;
+    padding:11px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:white;
+    color:var(--sub);
+    font-weight:600;
     cursor:pointer;
-    font-size:14px;
+    font-size:13.5px;
   }
-  .typeBtn.active.council{ background:#007AFF; color:white; }
-  .typeBtn.active.school{ background:#ff3b30; color:white; }
+  .typeBtn.active.council{ background:var(--navy-soft); color:var(--navy); border-color:var(--navy); }
+  .typeBtn.active.school{ background:var(--danger-soft); color:var(--danger); border-color:var(--danger); }
   #cancelEditBtn{
-    background:#8e8e93;
+    background:var(--navy-soft2);
+    color:var(--navy-mid);
     margin-bottom:10px;
+  }
+  .dayCell.jump-highlight{
+    animation:jumpPulse 0.9s ease 2;
+    z-index:1;
+  }
+  @keyframes jumpPulse{
+    0%{ box-shadow:0 0 0 0 rgba(27,58,107,.5); }
+    70%{ box-shadow:0 0 0 8px rgba(27,58,107,0); }
+    100%{ box-shadow:0 0 0 0 rgba(27,58,107,0); }
+  }
+  .eventCard[data-jump-date]{
+    cursor:pointer;
   }
 </style>
 
@@ -276,7 +272,7 @@
 
 <a href="index.html" class="backLink">← 처음으로</a>
 
-<h1>📅 학생회 일정</h1>
+<h1>학생회 일정</h1>
 <p>날짜를 눌러 일정을 등록하거나 확인하세요</p>
 
 <div class="calCard">
@@ -297,8 +293,8 @@
   <div id="calGrid" class="calGrid"></div>
 
   <div class="legendRow">
-    <span><span class="legendDot" style="background:#007AFF;"></span>학생회 일정</span>
-    <span><span class="legendDot" style="background:#ff3b30;"></span>전체 일정 / 공휴일</span>
+    <span><span class="legendDot" style="background:var(--navy);"></span>학생회 일정</span>
+    <span><span class="legendDot" style="background:var(--danger);"></span>전체 일정 / 공휴일</span>
   </div>
 </div>
 
@@ -307,7 +303,6 @@
 
 </div>
 
-<!-- 날짜 클릭 시 뜨는 모달: 해당 날짜 일정 목록 + 등록/수정 폼 -->
 <div id="dayModal" class="modal hidden">
   <div class="modalCard">
     <h3 id="modalDateLabel"></h3>
@@ -319,8 +314,8 @@
     <button id="cancelEditBtn" class="hidden">수정 취소</button>
 
     <div class="typeSwitch">
-      <button type="button" id="typeCouncilBtn" class="typeBtn council active">🔵 학생회 일정</button>
-      <button type="button" id="typeSchoolBtn" class="typeBtn school">🔴 전체 일정 (모의고사 등)</button>
+      <button type="button" id="typeCouncilBtn" class="typeBtn council active">학생회 일정</button>
+      <button type="button" id="typeSchoolBtn" class="typeBtn school">전체 일정</button>
     </div>
 
     <input id="eventTitle" placeholder="일정 제목 (예: 정기 회의)">
@@ -330,7 +325,7 @@
 
     <div class="modalButtons">
       <button id="saveBtn">등록</button>
-      <button id="closeModalBtn" style="background:#8e8e93;">닫기</button>
+      <button id="closeModalBtn" style="background:var(--navy-soft2); color:var(--ink);">닫기</button>
     </div>
   </div>
 </div>
