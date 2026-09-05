@@ -56,9 +56,9 @@
   }
   .dayCell{
     min-height:88px;
-    border:1px solid transparent;
+    border:1px solid var(--line);
     border-radius:8px;
-    background:var(--navy-soft2);
+    background:#FFFFFF;
     display:flex;
     flex-direction:column;
     align-items:stretch;
@@ -70,8 +70,8 @@
     position:relative;
     overflow:hidden;
   }
-  .dayCell.has-school{ background:var(--danger-soft); }
-  .dayCell.has-council{ background:var(--navy-soft); }
+  .dayCell.has-school{ background:var(--danger-soft); border-color:var(--danger-soft); }
+  .dayCell.has-council{ background:var(--navy-soft); border-color:var(--navy-soft); }
   .dayCell.today{ border-color:var(--navy); }
   .dayCell.blank{ visibility:hidden; cursor:default; }
   .dayNum{
