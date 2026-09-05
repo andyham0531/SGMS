@@ -19,15 +19,30 @@ const BAN_DAYS = 30;
 
 const umbrellaCol = collection(db, "umbrellas");
 const recordCol = collection(db, "umbrella_records");
+const managersCol = collection(db, "umbrella_managers");
+
+// 담당자 목록: 관리자 페이지(admin.html)에서 추가/삭제한 내용을 불러와
+// 우산 번호를 인원수만큼 균등하게 나눠 배정한다.
+let managers = [];
+async function loadManagers() {
+  try {
+    const snap = await getDocs(managersCol);
+    managers = snap.docs.map((d) => d.data());
+  } catch (err) {
+    console.error("담당자 목록을 불러오지 못했습니다:", err);
+  }
+}
+loadManagers();
 
 function getManager(number) {
-  if (number <= 5) return { name: "박나은", phone: "010-7188-2462" };
-  if (number <= 10) return { name: "백승주", phone: "010-5716-8514" };
-  return { name: "이윤빈", phone: "010-5109-1236" };
+  if (!managers.length) return { name: "담당자", phone: "" };
+  const bandSize = Math.ceil(TOTAL_UMBRELLAS / managers.length);
+  const idx = Math.min(managers.length - 1, Math.floor((number - 1) / bandSize));
+  return managers[idx];
 }
 
 function smsHref(phone) {
-  return "sms:" + phone.replace(/-/g, "");
+  return "sms:" + (phone || "").replace(/-/g, "");
 }
 
 function getPassedDays(time) {
