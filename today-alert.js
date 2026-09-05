@@ -75,7 +75,7 @@ function renderHomeUpcoming() {
 
     listEl.innerHTML = events.length
       ? events.map((e) => `
-          <div class="eventCard">
+          <a class="eventCard" href="schedule.html?date=${e.date}">
             <div class="eventTop">
               <div>
                 <span class="eventTypeBadge council">${typeLabel("council")}</span>
@@ -84,7 +84,7 @@ function renderHomeUpcoming() {
               </div>
             </div>
             ${e.place ? `<div class="eventMeta">${escapeHtml(e.place)}</div>` : ""}
-          </div>
+          </a>
         `).join("")
       : `<div class="card"><p class="emptyMsg">등록된 일정이 없어요</p></div>`;
   });
