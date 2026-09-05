@@ -38,11 +38,11 @@ async function checkTodayEvents() {
     listEl.innerHTML = events.map((e) => {
       const type = e.type === "school" ? "school" : "council";
       return `
-        <div class="todayEventCard ${type}">
+        <div class="todayEventCard">
           <span class="todayTypeBadge ${type}">${typeLabel(type)}</span>
           <div class="todayEventTitle">${escapeHtml(e.title)}</div>
-          ${e.place ? `<div class="todayEventMeta">📍 ${escapeHtml(e.place)}</div>` : ""}
-          ${e.owner ? `<div class="todayEventMeta">담당: ${escapeHtml(e.owner)}</div>` : ""}
+          ${e.place ? `<div class="todayEventMeta">${escapeHtml(e.place)}</div>` : ""}
+          ${e.owner ? `<div class="todayEventMeta">담당 ${escapeHtml(e.owner)}</div>` : ""}
           ${e.memo ? `<div class="todayEventMeta">${escapeHtml(e.memo)}</div>` : ""}
         </div>
       `;
