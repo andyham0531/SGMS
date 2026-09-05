@@ -11,7 +11,7 @@
 
 </head>
 
-<body>
+<body class="page-navy">
 
 <div class="container">
 
@@ -74,11 +74,11 @@ placeholder="이름">
 • 반납할 때 우산 <b>손잡이에 적힌 번호</b>를 꼭 확인하고, 빌린 그 우산을 반납해주세요.
 </div>
 
-<label style="font-size:13px;color:#666;">서명 (위 내용에 동의합니다)</label>
+<label style="font-size:13px;color:var(--sub);">서명 (위 내용에 동의합니다)</label>
 
-<canvas id="rentSignaturePad" width="300" height="120" style="border:1px solid #ddd;border-radius:12px;width:100%;touch-action:none;background:white;"></canvas>
+<canvas id="rentSignaturePad" width="300" height="120" class="sigCanvas"></canvas>
 
-<button id="clearRentSignature" style="background:#8e8e93;margin-top:8px;">서명 지우기</button>
+<button id="clearRentSignature" class="grayBtn">서명 지우기</button>
 
 <div class="modalButtons">
 
@@ -138,7 +138,7 @@ placeholder="이름">
 
 </div>
 
-<a href="umbrella_records.html" class="backLink">📋 대여 이력 전체 보기</a>
+<a href="umbrella_records.html" class="backLink">대여 이력 전체 보기</a>
 
 </div>
 
