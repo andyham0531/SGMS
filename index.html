@@ -38,6 +38,15 @@
     color:var(--sub);
     margin-top:2px;
   }
+  .seeAllLink{
+    display:block;
+    text-align:center;
+    margin-top:6px;
+    color:var(--navy-mid);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+  }
 </style>
 
 </head>
@@ -46,8 +55,10 @@
 
 <div class="container">
 
-    <a href="check.html" class="checkSmallBtn">내 벌점 조회</a>
-    <a href="umbrella-check.html" class="umbrellaSmallBtn">우산 조회</a>
+    <div class="topBar">
+        <a href="check.html">내 벌점 조회</a>
+        <a href="umbrella-check.html">우산 조회</a>
+    </div>
 
     <div class="logoWrap">
         <img src="logo.jpg" alt="서울미고 로고">
@@ -65,6 +76,10 @@
         <a href="schedule.html" class="menuBtn">학생회 일정</a>
 
     </div>
+
+    <div class="sectionLabel">다가오는 학생회 일정</div>
+    <div id="homeUpcomingList"></div>
+    <a href="schedule.html" class="seeAllLink">전체 일정 보기 →</a>
 
 </div>
 
