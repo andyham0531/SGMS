@@ -8,8 +8,10 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
+  addDoc,
   onSnapshot,
   getDocs,
+  serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
 const studentIdInput = document.getElementById("studentId");
@@ -94,14 +96,41 @@ studentTable.addEventListener("change", (e) => {
   updateFloatingPanel();
 });
 
+const adminLogsCol = collection(db, "admin_logs");
+
 async function adjustSelected(delta) {
   if (!selectedStudentId) return;
   const studentRef = doc(db, "students", selectedStudentId);
   const studentSnap = await getDoc(studentRef);
   if (!studentSnap.exists()) return;
-  const currentCount = studentSnap.data().count || 0;
+  const data = studentSnap.data();
+  const currentCount = data.count || 0;
   const newCount = Math.max(0, currentCount + delta);
-  await updateDoc(studentRef, { count: newCount });
+
+  // 마이너스(감소) 처리는 관리자 로그에 기록
+  if (delta < 0) {
+    try {
+      await addDoc(adminLogsCol, {
+        studentId: selectedStudentId,
+        studentName: data.studentName || "",
+        delta,
+        countAfter: newCount,
+        source: "급식선도",
+        createdAt: serverTimestamp(),
+      });
+    } catch (err) {
+      console.error("로그 기록 실패:", err);
+    }
+  }
+
+  // 0이 되면 목록에서 사라지도록 문서 자체를 삭제
+  if (newCount === 0) {
+    await deleteDoc(studentRef);
+    selectedStudentId = null;
+    updateFloatingPanel();
+  } else {
+    await updateDoc(studentRef, { count: newCount });
+  }
 }
 
 floatingMinus.addEventListener("click", () => adjustSelected(-1));
