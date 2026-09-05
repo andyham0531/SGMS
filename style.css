@@ -4,6 +4,7 @@
 
 :root{
     --navy: #1B3A6B;
+    --navy-2: #2F5586;
     --navy-dark: #12294D;
     --navy-soft: #E8EDF5;
     --navy-soft2: #F3F6FA;
@@ -234,42 +235,34 @@ td{
 .menuBox{
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:10px;
     margin-top:18px;
-    background:white;
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    overflow:hidden;
-    padding:4px;
 }
 
 .menuBtn{
     display:flex;
     align-items:center;
+    justify-content:center;
     width:100%;
-    text-align:left;
-    padding:16px 14px;
-    border-radius:10px;
-    font-size:15px;
-    font-weight:600;
-    color:var(--ink);
+    text-align:center;
+    padding:17px 14px;
+    border-radius:12px;
+    font-size:15.5px;
+    font-weight:700;
+    color:white;
     text-decoration:none;
-    background:transparent;
-    transition:background .15s ease;
+    background:var(--navy-2);
+    transition:opacity .15s ease;
 }
 
 .menuBtn:hover{
-    background:var(--navy-soft2);
-}
-
-.menuBtn + .menuBtn{
-    border-top:1px solid var(--line);
+    opacity:.9;
 }
 
 /* 이전 색상 클래스들은 모두 동일한 미니멀 톤으로 통일 */
 .lunchBtn, .morningBtn, .checkBtn, .umbrellaBtn, .scheduleBtn{
-    background:transparent;
-    color:var(--ink);
+    background:var(--navy-2);
+    color:white;
 }
 
 .staffLinks{
@@ -784,3 +777,63 @@ body.page-navy h1{ color:#FFFFFF; }
 body.page-navy p{ color:rgba(255,255,255,.72); }
 body.page-navy .backLink{ color:#CFE0F5; }
 body.page-navy .sectionLabel{ color:rgba(255,255,255,.6); }
+
+/* ===== 관리자 페이지 ===== */
+.adminRow{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+}
+
+.adminRow:last-child{ border-bottom:none; }
+
+.adminRow input{
+    margin-bottom:0;
+    padding:9px 10px;
+    font-size:13.5px;
+}
+
+.adminRowBtns{
+    display:flex;
+    gap:5px;
+    flex-shrink:0;
+}
+
+.adminSaveBtn{
+    width:auto;
+    padding:8px 12px;
+    font-size:12.5px;
+    background:var(--navy-2);
+}
+
+.adminDeleteBtn{
+    width:auto;
+    padding:8px 12px;
+    font-size:12.5px;
+    background:var(--danger-soft);
+    color:var(--danger);
+    font-weight:600;
+}
+
+.logItem{
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+    color:var(--ink);
+}
+
+.logItem:last-child{ border-bottom:none; }
+
+.logMeta{
+    font-size:11.5px;
+    color:var(--sub);
+    margin-top:2px;
+}
+
+.adminGate{
+    max-width:320px;
+    margin:80px auto;
+    text-align:center;
+}
