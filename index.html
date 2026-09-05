@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SGMS</title>
+<title>서울미고 학생회</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -11,15 +11,12 @@
 
 <style>
   .todayEventCard{
-    background:#f9f9fb;
-    border-radius:12px;
+    background:var(--navy-soft2);
+    border-radius:10px;
     padding:12px 14px;
     margin-bottom:8px;
-    border-left:4px solid #8e8e93;
     text-align:left;
   }
-  .todayEventCard.council{ border-left-color:#007AFF; }
-  .todayEventCard.school{ border-left-color:#ff3b30; }
   .todayTypeBadge{
     display:inline-block;
     font-size:11px;
@@ -28,17 +25,17 @@
     border-radius:999px;
     margin-bottom:6px;
     color:white;
+    background:var(--navy-mid);
   }
-  .todayTypeBadge.council{ background:#007AFF; }
-  .todayTypeBadge.school{ background:#ff3b30; }
+  .todayTypeBadge.school{ background:var(--danger); }
   .todayEventTitle{
     font-size:15px;
     font-weight:700;
-    color:#222;
+    color:var(--ink);
   }
   .todayEventMeta{
     font-size:12.5px;
-    color:#666;
+    color:var(--sub);
     margin-top:2px;
   }
 </style>
@@ -49,34 +46,23 @@
 
 <div class="container">
 
-    <!-- 좌측 상단 -->
     <a href="check.html" class="checkSmallBtn">내 벌점 조회</a>
+    <a href="umbrella-check.html" class="umbrellaSmallBtn">우산 조회</a>
 
-<a href="umbrella-check.html" class="umbrellaSmallBtn">우산 조회</a> 
-    <h1>SGMS</h1>
+    <div class="logoWrap">
+        <img src="logo.jpg" alt="서울미고 로고">
+    </div>
 
-    <p class="madeBy">
-        <span>Made by 서울미고 함석민</span>
-    </p>
+    <h1>서울미고 학생회</h1>
 
-    <p>선도부 관리 시스템</p>
+    <p>학생회 · 선도부 통합 시스템</p>
 
     <div class="menuBox">
 
-        <a href="lunch.html" class="menuBtn lunchBtn">
-            🍽 급식선도
-        </a>
-
-        <a href="morning.html" class="menuBtn morningBtn">
-            🌅 아침선도
-        </a>
-         <a href="umbrella_admin.html" class="menuBtn umbrellaBtn">
-            ☂️ 우산관리
-    </a>
-
-        <a href="schedule.html" class="menuBtn scheduleBtn">
-            📅 학생회 일정
-        </a>
+        <a href="lunch.html" class="menuBtn">급식선도</a>
+        <a href="morning.html" class="menuBtn">아침선도</a>
+        <a href="umbrella_admin.html" class="menuBtn">우산관리</a>
+        <a href="schedule.html" class="menuBtn">학생회 일정</a>
 
     </div>
 
@@ -85,7 +71,7 @@
 <!-- 오늘 일정이 있을 때 자동으로 뜨는 팝업 -->
 <div id="todayAlertModal" class="modal hidden">
   <div class="modalCard">
-    <h3 id="todayAlertTitle">📅 오늘의 일정</h3>
+    <h3 id="todayAlertTitle" style="color:var(--navy); margin-bottom:14px;">오늘의 일정</h3>
     <div id="todayAlertList"></div>
     <button id="todayAlertCloseBtn" style="margin-top:10px;">확인</button>
   </div>
