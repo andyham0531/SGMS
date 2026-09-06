@@ -14,7 +14,7 @@
     --line: #E4E8EF;
     --danger: #B5544A;
     --danger-soft: #F6EAE8;
-    --radius: 14px;
+    --radius: 0px;
 }
 
 *{
@@ -64,7 +64,7 @@ input{
     margin-bottom:10px;
     border:1px solid var(--line);
     background:var(--navy-soft2);
-    border-radius:10px;
+    border-radius:0;
     font-size:15px;
     color:var(--ink);
 }
@@ -79,7 +79,7 @@ button{
     width:100%;
     padding:13px;
     border:none;
-    border-radius:10px;
+    border-radius:0;
     background:var(--navy);
     color:white;
     font-size:15px;
@@ -148,7 +148,7 @@ td{
     font-size:12.5px;
     background:var(--danger-soft);
     color:var(--danger);
-    border-radius:8px;
+    border-radius:0;
     font-weight:600;
 }
 
@@ -174,7 +174,7 @@ td{
     font-size:10.5px;
     font-weight:500;
     padding:5px 13px;
-    border-radius:999px;
+    border-radius:0;
     pointer-events:none;
     z-index:5;
     white-space:nowrap;
@@ -192,7 +192,7 @@ td{
     font-weight:600;
     background:var(--navy-soft);
     color:var(--navy);
-    border-radius:6px;
+    border-radius:0;
     margin-left:4px;
 }
 
@@ -207,7 +207,7 @@ td{
     padding:6px 12px;
     font-size:14px;
     font-weight:700;
-    border-radius:8px;
+    border-radius:0;
 }
 
 .minusBtn{
@@ -246,7 +246,7 @@ td{
     width:100%;
     text-align:center;
     padding:17px 14px;
-    border-radius:12px;
+    border-radius:0;
     font-size:15.5px;
     font-weight:700;
     color:white;
@@ -317,7 +317,7 @@ td{
     gap:6px;
     background:var(--navy-soft2);
     padding:6px 10px;
-    border-radius:999px;
+    border-radius:0;
 }
 
 .floatingAdjust.hidden{
@@ -430,7 +430,7 @@ td{
     font-size:12px;
     background:var(--danger-soft);
     padding:2px 8px;
-    border-radius:8px;
+    border-radius:0;
 }
 
 .ruleGroup ul{ margin-top:10px; padding-left:18px; }
@@ -457,7 +457,7 @@ td{
 }
 
 .umbrellaCard{
-    border-radius:12px;
+    border-radius:0;
     padding:16px 8px;
     text-align:center;
     color:var(--ink);
@@ -507,7 +507,7 @@ td{
     background:var(--navy-soft2);
     color:var(--navy);
     font-weight:600;
-    border-radius:10px;
+    border-radius:0;
     font-size:15px;
 }
 
@@ -523,7 +523,7 @@ select{
 .overdueItem{
     padding:12px;
     background:var(--danger-soft);
-    border-radius:10px;
+    border-radius:0;
     font-size:13px;
     color:var(--ink);
 }
@@ -537,7 +537,7 @@ select{
     font-weight:600;
     background:var(--navy);
     color:white;
-    border-radius:8px;
+    border-radius:0;
 }
 
 /* ===== 우산 대여 이력 표 ===== */
@@ -575,7 +575,7 @@ select{
     width:56px;
     height:auto;
     border:1px solid var(--line);
-    border-radius:4px;
+    border-radius:0;
     background:white;
 }
 
@@ -586,7 +586,7 @@ select{
     flex:1;
     padding:11px;
     border:1px solid var(--line);
-    border-radius:10px;
+    border-radius:0;
     background:white;
     color:var(--sub);
     font-weight:600;
@@ -615,7 +615,7 @@ select{
     background:var(--navy-soft2);
     color:var(--navy);
     font-weight:600;
-    border-radius:10px;
+    border-radius:0;
     font-size:15px;
 }
 
@@ -624,7 +624,7 @@ select{
 .msgBox{
     width:100%;
     padding:10px;
-    border-radius:10px;
+    border-radius:0;
     border:1px solid var(--line);
     font-size:13.5px;
     resize:none;
@@ -633,7 +633,7 @@ select{
 
 .termsBox{
     background:var(--navy-soft2);
-    border-radius:10px;
+    border-radius:0;
     padding:12px;
     font-size:12.5px;
     line-height:1.6;
@@ -643,7 +643,7 @@ select{
 
 .sigCanvas{
     border:1px solid var(--line);
-    border-radius:10px;
+    border-radius:0;
     width:100%;
     touch-action:none;
     background:white;
@@ -657,7 +657,7 @@ select{
     text-align:center;
     padding:13px;
     margin-top:8px;
-    border-radius:10px;
+    border-radius:0;
     background:var(--navy);
     color:white;
     font-size:15px;
@@ -677,7 +677,7 @@ select{
     display:flex;
     justify-content:flex-end;
     gap:20px;
-    border-radius:0 0 16px 16px;
+    border-radius:0;
 }
 
 .topBar a{
@@ -690,7 +690,7 @@ select{
 /* ===== 일정 카드 (공용 - 메인/일정 페이지에서 함께 사용) ===== */
 .eventCard{
     background:white;
-    border-radius:12px;
+    border-radius:0;
     padding:14px 16px;
     border:1px solid var(--line);
     margin-bottom:9px;
@@ -714,7 +714,7 @@ a.eventCard{
     font-size:11px;
     font-weight:700;
     padding:2px 9px;
-    border-radius:999px;
+    border-radius:0;
     margin-bottom:6px;
     color:white;
 }
@@ -729,7 +729,7 @@ a.eventCard{
     font-size:11px;
     font-weight:600;
     padding:2px 9px;
-    border-radius:999px;
+    border-radius:0;
     margin-bottom:6px;
     margin-left:4px;
 }
