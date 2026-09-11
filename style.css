@@ -3,12 +3,12 @@
 @import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css');
 
 :root{
-    --navy: #5B5079;
-    --navy-2: #746A8D;
-    --navy-dark: #453C5F;
-    --navy-soft: #EBE8F1;
-    --navy-soft2: #F5F3F8;
-    --navy-mid: #9089A8;
+    --navy: #0A226C;
+    --navy-2: #3B4E89;
+    --navy-dark: #081B56;
+    --navy-soft: #E2E4ED;
+    --navy-soft2: #F0F2F6;
+    --navy-mid: #919CBD;
     --ink: #23272F;
     --sub: #7A8494;
     --line: #E4E8EF;
@@ -169,7 +169,7 @@ td{
     left:50%;
     bottom:14px;
     transform:translateX(-50%);
-    background:rgba(91,80,121,.85);
+    background:rgba(10,34,108,.85);
     color:rgba(255,255,255,.85);
     font-size:10.5px;
     font-weight:500;
