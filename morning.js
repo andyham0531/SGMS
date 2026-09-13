@@ -1,134 +1,840 @@
-// morning.js
-import { db } from "./firebase.js";
-import { studentsData } from "./students-data.js";
-import {
-  collection,
-  addDoc,
-  deleteDoc,
-  onSnapshot,
-  getDocs,
-  serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+/* ===== 서울미고 학생회 - 공통 스타일 ===== */
 
-const studentIdInput = document.getElementById("studentId");
-const studentNameInput = document.getElementById("studentName");
-const saveBtn = document.getElementById("saveBtn");
-const recordTable = document.getElementById("recordTable");
-const deleteAllBtn = document.getElementById("deleteAll");
-const reasonRadios = document.querySelectorAll('input[name="reason"]');
-const customFields = document.getElementById("customFields");
-const customReasonInput = document.getElementById("customReason");
-const customScoreInput = document.getElementById("customScore");
+@import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css');
 
-// 급식선도(students 컬렉션)와 완전히 분리된 별도 컬렉션
-const recordsCol = collection(db, "morning_records");
+:root{
+    --navy: #0A226C;
+    --navy-bg: #2F4382;
+    --navy-2: #3B4E89;
+    --navy-dark: #081B56;
+    --navy-soft: #E2E4ED;
+    --navy-soft2: #F0F2F6;
+    --navy-mid: #919CBD;
+    --ink: #23272F;
+    --sub: #7A8494;
+    --line: #E4E8EF;
+    --danger: #B5544A;
+    --danger-soft: #F6EAE8;
+    --radius: 0px;
+}
 
-// "기타" 선택 시에만 직접 입력창 보이기
-reasonRadios.forEach((radio) => {
-  radio.addEventListener("change", () => {
-    if (radio.value === "기타" && radio.checked) {
-      customFields.classList.remove("hidden");
-    } else {
-      customFields.classList.add("hidden");
-    }
-  });
-});
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'SUIT', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
 
-// 실시간으로 기록 표시 (최근 등록순)
-onSnapshot(recordsCol, (snapshot) => {
-  recordTable.innerHTML = "";
+body{
+    background:#FAFBFC;
+    color:var(--ink);
+}
 
-  const records = snapshot.docs
-    .map((docSnap) => docSnap.data())
-    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+.container{
+    max-width:480px;
+    margin:0 auto;
+    padding:24px 20px 40px;
+    position:relative;
+}
 
-  records.forEach((data) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${data.studentId}</td>
-      <td>${data.studentName}</td>
-      <td>${data.reason}</td>
-      <td>${data.score}점</td>
-    `;
-    recordTable.appendChild(tr);
-  });
-});
+h1{
+    text-align:center;
+    font-size:22px;
+    font-weight:700;
+    color:var(--navy);
+    letter-spacing:-0.02em;
+}
 
-// 등록 버튼
-saveBtn.addEventListener("click", async () => {
-  const studentId = studentIdInput.value.trim();
-  const studentName = studentNameInput.value.trim();
-  const selectedRadio = [...reasonRadios].find((r) => r.checked);
+p{
+    text-align:center;
+    color:var(--sub);
+    font-size:13.5px;
+    margin-bottom:20px;
+}
 
-  if (!studentId || !studentName) {
-    alert("학번과 이름을 모두 입력해주세요.");
-    return;
-  }
+.card{
+    background:white;
+    border-radius:var(--radius);
+    padding:18px;
+    border:1px solid var(--line);
+}
 
-  let reason = selectedRadio.value;
-  let score = Number(selectedRadio.dataset.score);
+input{
+    width:100%;
+    padding:13px 14px;
+    margin-bottom:10px;
+    border:1px solid var(--line);
+    background:var(--navy-soft2);
+    border-radius:0;
+    font-size:15px;
+    color:var(--ink);
+}
 
-  if (selectedRadio.value === "기타") {
-    reason = customReasonInput.value.trim();
-    score = Number(customScoreInput.value);
+input:focus{
+    outline:none;
+    border-color:var(--navy-mid);
+    background:white;
+}
 
-    if (!reason || !score) {
-      alert("사유와 점수를 모두 입력해주세요.");
-      return;
-    }
-  }
+button{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:0;
+    background:var(--navy);
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:opacity .15s ease;
+}
 
-  saveBtn.disabled = true;
-  try {
-    await addDoc(recordsCol, {
-      studentId,
-      studentName,
-      reason,
-      score,
-      createdAt: serverTimestamp(),
-    });
+button:hover{
+    opacity:.9;
+}
 
-    studentIdInput.value = "";
-    studentNameInput.value = "";
-    customReasonInput.value = "";
-    customScoreInput.value = "";
-    studentIdInput.focus();
-  } catch (err) {
-    console.error(err);
-    alert("등록 중 오류가 발생했습니다. 콘솔을 확인해주세요.");
-  } finally {
-    saveBtn.disabled = false;
-  }
-});
+.countBox{
+    background:white;
+    margin-top:16px;
+    border-radius:var(--radius);
+    padding:18px;
+    border:1px solid var(--line);
+    position:relative;
+}
 
-studentIdInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") studentNameInput.focus();
-});
-studentNameInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") saveBtn.click();
-});
+.countBox h3{
+    font-size:14px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:12px;
+}
 
-// 학번 입력 시 명렬표에서 이름 자동완성
-studentIdInput.addEventListener("input", () => {
-  const sid = studentIdInput.value.trim();
-  if (studentsData[sid]) {
-    studentNameInput.value = studentsData[sid];
-  }
-});
+table{
+    width:100%;
+    border-collapse:collapse;
+}
 
-// 전체 삭제 (이 파트는 개별 삭제 없이 전체 삭제만 지원)
-deleteAllBtn.addEventListener("click", async () => {
-  const confirmDelete = confirm("전체 기록을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.");
-  if (!confirmDelete) return;
+th{
+    padding:10px 8px;
+    background:var(--navy-soft);
+    color:var(--navy);
+    font-size:12.5px;
+    font-weight:700;
+}
 
-  deleteAllBtn.disabled = true;
-  try {
-    const snapshot = await getDocs(recordsCol);
-    await Promise.all(snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref)));
-  } catch (err) {
-    console.error(err);
-    alert("삭제 중 오류가 발생했습니다. 콘솔을 확인해주세요.");
-  } finally {
-    deleteAllBtn.disabled = false;
-  }
-});
+td{
+    padding:10px 8px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+    font-size:13.5px;
+}
+
+.bottom{
+    margin-top:16px;
+}
+
+#deleteAll{
+    background:var(--danger);
+}
+
+.warning{
+    color:var(--danger);
+    font-weight:600;
+    font-size:13px;
+}
+
+.deleteOneBtn{
+    width:auto;
+    padding:6px 12px;
+    font-size:12.5px;
+    background:var(--danger-soft);
+    color:var(--danger);
+    border-radius:0;
+    font-weight:600;
+}
+
+.madeBy{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.madeBy span{
+    display:inline-block;
+    color:var(--sub);
+    font-size:12px;
+    font-weight:500;
+}
+
+.madeByFooter{
+    position:fixed;
+    left:50%;
+    bottom:14px;
+    transform:translateX(-50%);
+    background:rgba(10,34,108,.85);
+    color:rgba(255,255,255,.85);
+    font-size:10.5px;
+    font-weight:500;
+    padding:5px 13px;
+    border-radius:0;
+    pointer-events:none;
+    z-index:5;
+    white-space:nowrap;
+}
+
+.penaltyCell{
+    color:var(--danger);
+    font-weight:700;
+}
+
+.processPenaltyBtn{
+    width:auto;
+    padding:4px 10px;
+    font-size:11px;
+    font-weight:600;
+    background:var(--navy-soft);
+    color:var(--navy);
+    border-radius:0;
+    margin-left:4px;
+}
+
+.adjustCell{
+    display:flex;
+    gap:6px;
+    justify-content:center;
+}
+
+.adjustBtn{
+    width:auto;
+    padding:6px 12px;
+    font-size:14px;
+    font-weight:700;
+    border-radius:0;
+}
+
+.minusBtn{
+    background:var(--navy-soft);
+    color:var(--navy);
+}
+
+.plusBtn{
+    background:var(--navy);
+}
+
+/* ===== 시작 화면 ===== */
+.logoWrap{
+    display:flex;
+    justify-content:center;
+    margin-bottom:14px;
+}
+
+.logoWrap img{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+}
+
+.menuBox{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:18px;
+}
+
+.menuBtn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    text-align:center;
+    padding:17px 14px;
+    border-radius:0;
+    font-size:15.5px;
+    font-weight:700;
+    color:white;
+    text-decoration:none;
+    background:var(--navy-2);
+    transition:opacity .15s ease;
+}
+
+.menuBtn:hover{
+    opacity:.9;
+}
+
+/* 이전 색상 클래스들은 모두 동일한 미니멀 톤으로 통일 */
+.lunchBtn, .morningBtn, .checkBtn, .umbrellaBtn, .scheduleBtn{
+    background:var(--navy-2);
+    color:white;
+}
+
+.staffLinks{
+    position:absolute;
+    top:16px;
+    left:16px;
+    display:flex;
+    gap:10px;
+}
+
+.staffLinks a{
+    font-size:11px;
+    color:var(--sub);
+    text-decoration:none;
+}
+
+.checkSmallBtn{
+    position:absolute;
+    top:24px;
+    left:20px;
+    color:var(--sub);
+    font-size:12px;
+    text-decoration:none;
+    font-weight:500;
+    background:none;
+    padding:0;
+    border-radius:0;
+}
+
+.backLink{
+    display:inline-block;
+    margin-bottom:14px;
+    color:var(--navy-mid);
+    text-decoration:none;
+    font-weight:600;
+    font-size:13.5px;
+}
+
+.selectCheck{
+    width:19px;
+    height:19px;
+    border-radius:50%;
+    accent-color:var(--navy);
+}
+
+.floatingAdjust{
+    position:absolute;
+    top:14px;
+    right:14px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--navy-soft2);
+    padding:6px 10px;
+    border-radius:0;
+}
+
+.floatingAdjust.hidden{
+    display:none;
+}
+
+.floatingName{
+    font-size:12px;
+    color:var(--ink);
+    font-weight:600;
+    max-width:100px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.circleBtn{
+    width:26px;
+    height:26px;
+    padding:0;
+    border-radius:50%;
+    font-size:13px;
+    font-weight:700;
+    line-height:1;
+}
+
+.minusCircle{ background:var(--navy-mid); }
+.plusCircle{ background:var(--navy); }
+
+.reasonGroup{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:12px;
+    font-size:13.5px;
+    color:var(--ink);
+}
+
+.reasonGroup label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.reasonGroup input[type="radio"]{
+    width:auto;
+    flex-shrink:0;
+    margin-bottom:0;
+    accent-color:var(--navy);
+}
+
+.customFields{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.customFields.hidden{ display:none; }
+.hidden{ display:none; }
+
+.resultRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+}
+
+.resultRow:last-child{ border-bottom:none; }
+
+.resultLabel{ color:var(--sub); font-size:14px; }
+.resultValue{ font-size:16px; font-weight:700; color:var(--ink); }
+
+.rulesBox{
+    background:white;
+    margin-top:16px;
+    border-radius:var(--radius);
+    padding:18px;
+    border:1px solid var(--line);
+}
+
+.rulesBox h3{
+    margin-bottom:10px;
+    font-size:14.5px;
+    color:var(--navy);
+}
+
+.ruleGroup{
+    border-top:1px solid var(--line);
+    padding:10px 0;
+}
+
+.ruleGroup:first-of-type{ border-top:none; }
+
+.ruleGroup summary{
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.ruleGroup summary::-webkit-details-marker{ display:none; }
+
+.ruleScore{
+    color:var(--danger);
+    font-weight:700;
+    font-size:12px;
+    background:var(--danger-soft);
+    padding:2px 8px;
+    border-radius:0;
+}
+
+.ruleGroup ul{ margin-top:10px; padding-left:18px; }
+.ruleGroup li{ font-size:12.5px; color:var(--sub); line-height:1.6; margin-bottom:6px; }
+.ruleNote{ display:block; color:var(--sub); font-size:11.5px; margin-top:2px; }
+.ruleTodo{ color:var(--navy-mid); font-weight:600; }
+
+.umbrellaSmallBtn{
+    position:absolute;
+    top:24px;
+    right:20px;
+    color:var(--sub);
+    font-size:12px;
+    text-decoration:none;
+    font-weight:500;
+}
+
+/* ===== 우산관리 ===== */
+.umbrellaGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:12px;
+}
+
+.umbrellaCard{
+    border-radius:0;
+    padding:16px 8px;
+    text-align:center;
+    color:var(--ink);
+    cursor:pointer;
+    font-weight:600;
+    font-size:13px;
+    background:var(--navy-soft2);
+    border:1px solid var(--line);
+}
+
+.umbrellaNumber{ font-size:18px; margin-bottom:4px; font-weight:700; }
+.umbrellaState{ font-size:11.5px; color:var(--sub); }
+
+.available{ background:var(--navy-soft2); color:var(--ink); }
+.day1{ background:var(--navy-soft); color:var(--navy); }
+.rented{ background:#F3ECE3; color:#8A6A3D; }
+.overdue{ background:var(--danger-soft); color:var(--danger); }
+.lost{ background:#EDEDEF; color:var(--sub); }
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(20,30,50,.45);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+
+.modal.hidden{ display:none; }
+
+.modalCard{
+    width:90%;
+    max-width:380px;
+    background:white;
+    border-radius:var(--radius);
+    padding:20px;
+}
+
+.modalButtons{ display:flex; gap:10px; margin-top:14px; }
+.modalButtons button{ flex:1; }
+
+#managerSelect{
+    width:100%;
+    padding:13px;
+    border:1.5px solid var(--navy);
+    background:var(--navy-soft2);
+    color:var(--navy);
+    font-weight:600;
+    border-radius:0;
+    font-size:15px;
+}
+
+select{
+    border:1.5px solid var(--navy);
+    color:var(--navy);
+    font-weight:600;
+}
+}
+
+#overdueList{ display:flex; flex-direction:column; gap:8px; }
+
+.overdueItem{
+    padding:12px;
+    background:var(--danger-soft);
+    border-radius:0;
+    font-size:13px;
+    color:var(--ink);
+}
+
+.reminderBtn{
+    width:auto;
+    display:block;
+    margin-top:8px;
+    padding:6px 12px;
+    font-size:12px;
+    font-weight:600;
+    background:var(--navy);
+    color:white;
+    border-radius:0;
+}
+
+/* ===== 우산 대여 이력 표 ===== */
+.recordsContainer{ max-width:700px; }
+
+.tableScroll{
+    overflow-x:auto;
+    margin-top:14px;
+    background:white;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+}
+
+.recordsTable{
+    width:100%;
+    border-collapse:collapse;
+    font-size:11.5px;
+    white-space:nowrap;
+}
+
+.recordsTable th{
+    padding:10px 8px;
+    background:var(--navy-soft);
+    color:var(--navy);
+    font-size:11px;
+}
+
+.recordsTable td{
+    padding:10px 8px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+}
+
+.signatureThumb{
+    width:56px;
+    height:auto;
+    border:1px solid var(--line);
+    border-radius:0;
+    background:white;
+}
+
+/* ===== 우산 대여/반납 셀프서비스 ===== */
+.modeSwitch{ display:flex; gap:8px; margin-bottom:14px; }
+
+.modeBtn{
+    flex:1;
+    padding:11px;
+    border:1px solid var(--line);
+    border-radius:0;
+    background:white;
+    color:var(--sub);
+    font-weight:600;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.modeBtn.active{
+    background:var(--navy);
+    color:white;
+    border-color:var(--navy);
+}
+
+.smallLabel{
+    display:block;
+    font-size:12.5px;
+    color:var(--sub);
+    margin-top:6px;
+    margin-bottom:4px;
+}
+
+#rentUmbrellaSelect{
+    width:100%;
+    padding:13px;
+    border:1.5px solid var(--navy);
+    background:var(--navy-soft2);
+    color:var(--navy);
+    font-weight:600;
+    border-radius:0;
+    font-size:15px;
+}
+
+.managerInfo{ font-weight:700; color:var(--navy); margin-bottom:8px; font-size:13.5px; }
+
+.msgBox{
+    width:100%;
+    padding:10px;
+    border-radius:0;
+    border:1px solid var(--line);
+    font-size:13.5px;
+    resize:none;
+    background:var(--navy-soft2);
+}
+
+.termsBox{
+    background:var(--navy-soft2);
+    border-radius:0;
+    padding:12px;
+    font-size:12.5px;
+    line-height:1.6;
+    color:var(--ink);
+    margin:10px 0;
+}
+
+.sigCanvas{
+    border:1px solid var(--line);
+    border-radius:0;
+    width:100%;
+    touch-action:none;
+    background:white;
+    display:block;
+}
+
+.grayBtn{ background:var(--navy-mid); margin-top:8px; }
+
+.smsBtn{
+    display:block;
+    text-align:center;
+    padding:13px;
+    margin-top:8px;
+    border-radius:0;
+    background:var(--navy);
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+}
+
+.topGapBtn{ margin-top:10px; }
+
+#returnPhotoInput{ width:100%; margin-top:6px; }
+
+/* ===== 상단 네비바 (메인 화면 전용) ===== */
+.topBar{
+    background:var(--navy);
+    margin:-24px -20px 22px;
+    padding:14px 20px;
+    display:flex;
+    justify-content:flex-end;
+    gap:20px;
+    border-radius:0;
+}
+
+.topBar a{
+    color:#EAF0FA;
+    font-size:12.5px;
+    font-weight:600;
+    text-decoration:none;
+}
+
+/* ===== 일정 카드 (공용 - 메인/일정 페이지에서 함께 사용) ===== */
+.eventCard{
+    background:white;
+    border-radius:0;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    margin-bottom:9px;
+}
+
+a.eventCard{
+    display:block;
+    color:inherit;
+    text-decoration:none;
+}
+
+.eventTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:8px;
+}
+
+.eventTypeBadge{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    padding:2px 9px;
+    border-radius:0;
+    margin-bottom:6px;
+    color:white;
+}
+
+.eventTypeBadge.council{ background:var(--navy); }
+.eventTypeBadge.school{ background:var(--danger); }
+
+.eventDateBadge{
+    display:inline-block;
+    background:var(--navy-soft2);
+    color:var(--sub);
+    font-size:11px;
+    font-weight:600;
+    padding:2px 9px;
+    border-radius:0;
+    margin-bottom:6px;
+    margin-left:4px;
+}
+
+.eventTitle{
+    font-size:15.5px;
+    font-weight:700;
+    color:var(--ink);
+}
+
+.eventMeta{
+    font-size:12.5px;
+    color:var(--sub);
+    margin-top:2px;
+}
+
+.eventMemo{
+    font-size:12.5px;
+    color:var(--ink);
+    margin-top:6px;
+    line-height:1.5;
+    white-space:pre-wrap;
+}
+
+.emptyMsg{
+    text-align:center;
+    color:var(--sub);
+    font-size:13px;
+    padding:16px 0;
+}
+
+.sectionLabel{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--sub);
+    margin:20px 0 10px 2px;
+}
+
+/* ===== 남색 배경 페이지 (급식선도/아침선도/우산관리/일정) ===== */
+body.page-navy{
+    background:var(--navy-bg);
+}
+
+body.page-navy h1{ color:#FFFFFF; }
+body.page-navy p{ color:rgba(255,255,255,.72); }
+body.page-navy .backLink{ color:#CFE0F5; }
+body.page-navy .sectionLabel{ color:rgba(255,255,255,.6); }
+
+/* ===== 관리자 페이지 ===== */
+.adminRow{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+}
+
+.adminRow:last-child{ border-bottom:none; }
+
+.adminRow input{
+    margin-bottom:0;
+    padding:9px 10px;
+    font-size:13.5px;
+}
+
+.adminRowBtns{
+    display:flex;
+    gap:5px;
+    flex-shrink:0;
+}
+
+.adminSaveBtn{
+    width:auto;
+    padding:8px 12px;
+    font-size:12.5px;
+    background:var(--navy-2);
+}
+
+.adminDeleteBtn{
+    width:auto;
+    padding:8px 12px;
+    font-size:12.5px;
+    background:var(--danger-soft);
+    color:var(--danger);
+    font-weight:600;
+}
+
+.logItem{
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+    color:var(--ink);
+}
+
+.logItem:last-child{ border-bottom:none; }
+
+.logMeta{
+    font-size:11.5px;
+    color:var(--sub);
+    margin-top:2px;
+}
+
+.adminGate{
+    max-width:320px;
+    margin:80px auto;
+    text-align:center;
+}
