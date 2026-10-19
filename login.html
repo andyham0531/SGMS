@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학생회 로그인 | 서울미고 학생회+</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>서울미고 학생회+</h1>
+    <p>학생회 계정으로 로그인해 주세요.</p>
+
+    <button id="googleLoginBtn">Google 계정으로 로그인</button>
+    <p id="loginMessage" role="status"></p>
+  </main>
+
+  <script type="module">
+    import {
+      signInWithPopup,
+      signInWithRedirect,
+      getRedirectResult
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+    import {
+      auth,
+      googleProvider,
+      authReady
+    } from "./firebase.js";
+
+    const button = document.getElementById("googleLoginBtn");
+    const message = document.getElementById("loginMessage");
+
+    await authReady;
+
+    try {
+      const result = await getRedirectResult(auth);
+      if (result?.user) {
+        location.replace("index.html");
+      }
+    } catch (error) {
+      message.textContent = "로그인에 실패했습니다. 다시 시도해 주세요.";
+    }
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      message.textContent = "로그인 중입니다.";
+
+      try {
+        await signInWithPopup(auth, googleProvider);
+        location.replace("index.html");
+      } catch (error) {
+        if (
+          error.code === "auth/popup-blocked" ||
+          error.code === "auth/operation-not-supported-in-this-environment"
+        ) {
+          try {
+            await signInWithRedirect(auth, googleProvider);
+            return;
+          } catch (redirectError) {
+            message.textContent = "로그인에 실패했습니다. 브라우저에서 다시 시도해 주세요.";
+          }
+        } else {
+          message.textContent =
+            error.code === "auth/unauthorized-domain"
+              ? "Firebase 인증 설정에서 현재 사이트 도메인을 허용해 주세요."
+              : "로그인에 실패했습니다. 계정과 인증 설정을 확인해 주세요.";
+        }
+      }
+
+      button.disabled = false;
+    });
+  </script>
+</body>
+</html>
