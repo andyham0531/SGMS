@@ -11,7 +11,6 @@
   <main class="container">
     <h1>서울미고 학생회+</h1>
     <p>학생회 계정으로 로그인해 주세요.</p>
-
     <button id="googleLoginBtn">Google 계정으로 로그인</button>
     <p id="loginMessage" role="status"></p>
   </main>
@@ -20,11 +19,18 @@
     import {
       signInWithPopup,
       signInWithRedirect,
-      getRedirectResult
+      getRedirectResult,
+      signOut
     } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
     import {
+      doc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    import {
       auth,
+      db,
       googleProvider,
       authReady
     } from "./firebase.js";
@@ -32,15 +38,47 @@
     const button = document.getElementById("googleLoginBtn");
     const message = document.getElementById("loginMessage");
 
+    async function checkMember(user) {
+      const email = user.email?.trim().toLowerCase();
+
+      if (!email) {
+        await signOut(auth);
+        message.textContent = "계정 이메일을 확인할 수 없습니다.";
+        return false;
+      }
+
+      try {
+        const memberRef = doc(db, "councilMembers", email);
+        const memberSnap = await getDoc(memberRef);
+
+        if (!memberSnap.exists() ||
+            memberSnap.data().active !== true ||
+            memberSnap.data().email?.trim().toLowerCase() !== email) {
+          await signOut(auth);
+          message.textContent = "등록된 학생회 계정이 아닙니다. 담당자에게 문의해 주세요.";
+          return false;
+        }
+
+        location.replace("index.html");
+        return true;
+      } catch (error) {
+        message.textContent =
+          "회원 확인에 실패했습니다. Firestore 설정을 확인해 주세요.";
+        return false;
+      }
+    }
+
     await authReady;
 
     try {
       const result = await getRedirectResult(auth);
       if (result?.user) {
-        location.replace("index.html");
+        await checkMember(result.user);
+      } else if (auth.currentUser) {
+        await checkMember(auth.currentUser);
       }
     } catch (error) {
-      message.textContent = "로그인에 실패했습니다. 다시 시도해 주세요.";
+      message.textContent = "로그인 확인 중 오류가 발생했습니다. 다시 시도해 주세요.";
     }
 
     button.addEventListener("click", async () => {
@@ -48,8 +86,8 @@
       message.textContent = "로그인 중입니다.";
 
       try {
-        await signInWithPopup(auth, googleProvider);
-        location.replace("index.html");
+        const result = await signInWithPopup(auth, googleProvider);
+        await checkMember(result.user);
       } catch (error) {
         if (
           error.code === "auth/popup-blocked" ||
@@ -61,11 +99,10 @@
           } catch (redirectError) {
             message.textContent = "로그인에 실패했습니다. 브라우저에서 다시 시도해 주세요.";
           }
+        } else if (error.code === "permission-denied") {
+          message.textContent = "회원 정보를 읽을 수 없습니다. Firestore 규칙을 확인해 주세요.";
         } else {
-          message.textContent =
-            error.code === "auth/unauthorized-domain"
-              ? "Firebase 인증 설정에서 현재 사이트 도메인을 허용해 주세요."
-              : "로그인에 실패했습니다. 계정과 인증 설정을 확인해 주세요.";
+          message.textContent = "로그인에 실패했습니다. 다시 시도해 주세요.";
         }
       }
 
