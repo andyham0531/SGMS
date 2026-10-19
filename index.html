@@ -1,107 +1,76 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>서울미고 학생회+</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script type="module" src="today-alert.js"></script>
-
-<style>
-  .logoWrap img{
-    width:96px;
-    height:96px;
-  }
-  h1{
-    font-size:30px;
-    margin-bottom:2px;
-  }
-  .todayEventCard{
-    background:var(--navy-soft2);
-    border-radius:0;
-    padding:12px 14px;
-    margin-bottom:8px;
-    text-align:left;
-  }
-  .todayTypeBadge{
-    display:inline-block;
-    font-size:11px;
-    font-weight:700;
-    padding:2px 9px;
-    border-radius:0;
-    margin-bottom:6px;
-    color:white;
-    background:var(--navy-mid);
-  }
-  .todayTypeBadge.school{ background:var(--danger); }
-  .todayEventTitle{
-    font-size:15px;
-    font-weight:700;
-    color:var(--ink);
-  }
-  .todayEventMeta{
-    font-size:12.5px;
-    color:var(--sub);
-    margin-top:2px;
-  }
-  .seeAllLink{
-    display:block;
-    text-align:center;
-    margin-top:6px;
-    color:var(--navy-mid);
-    text-decoration:none;
-    font-size:13px;
-    font-weight:600;
-  }
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학생회 로그인 | 서울미고 학생회+</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-<div class="container">
-
-    <div class="topBar">
-        <a href="check.html">내 벌점 조회</a>
-        <a href="umbrella-check.html">우산 조회</a>
-        <a href="admin.html">관리자</a>
-    </div>
-
-    <div class="logoWrap">
-        <img src="logo.jpg" alt="서울미고 로고">
-    </div>
-
+  <main class="container">
     <h1>서울미고 학생회+</h1>
+    <p>학생회 계정으로 로그인해 주세요.</p>
 
-    <p>통합관리웹</p>
+    <button id="googleLoginBtn">Google 계정으로 로그인</button>
+    <p id="loginMessage" role="status"></p>
+  </main>
 
-    <div class="menuBox">
+  <script type="module">
+    import {
+      signInWithPopup,
+      signInWithRedirect,
+      getRedirectResult
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
-        <a href="lunch.html" class="menuBtn">급식선도</a>
-        <a href="morning.html" class="menuBtn">아침선도</a>
-        <a href="umbrella_admin.html" class="menuBtn">우산관리</a>
-        <a href="schedule.html" class="menuBtn">학생회 일정</a>
+    import {
+      auth,
+      googleProvider,
+      authReady
+    } from "./firebase.js";
 
-    </div>
+    const button = document.getElementById("googleLoginBtn");
+    const message = document.getElementById("loginMessage");
 
-    <div class="sectionLabel">다가오는 학생회 일정</div>
-    <div id="homeUpcomingList"></div>
-    <a href="schedule.html" class="seeAllLink">전체 일정 보기 →</a>
+    await authReady;
 
-</div>
+    try {
+      const result = await getRedirectResult(auth);
+      if (result?.user) {
+        location.replace("index.html");
+      }
+    } catch (error) {
+      message.textContent = "로그인에 실패했습니다. 다시 시도해 주세요.";
+    }
 
-<!-- 오늘 일정이 있을 때 자동으로 뜨는 팝업 -->
-<div id="todayAlertModal" class="modal hidden">
-  <div class="modalCard">
-    <h3 id="todayAlertTitle" style="color:var(--navy); margin-bottom:14px;">오늘의 일정</h3>
-    <div id="todayAlertList"></div>
-    <button id="todayAlertCloseBtn" style="margin-top:10px;">확인</button>
-  </div>
-</div>
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      message.textContent = "로그인 중입니다.";
 
-<div class="madeByFooter">Made by 서울미고 함석민</div>
+      try {
+        await signInWithPopup(auth, googleProvider);
+        location.replace("index.html");
+      } catch (error) {
+        if (
+          error.code === "auth/popup-blocked" ||
+          error.code === "auth/operation-not-supported-in-this-environment"
+        ) {
+          try {
+            await signInWithRedirect(auth, googleProvider);
+            return;
+          } catch (redirectError) {
+            message.textContent = "로그인에 실패했습니다. 브라우저에서 다시 시도해 주세요.";
+          }
+        } else {
+          message.textContent =
+            error.code === "auth/unauthorized-domain"
+              ? "Firebase 인증 설정에서 현재 사이트 도메인을 허용해 주세요."
+              : "로그인에 실패했습니다. 계정과 인증 설정을 확인해 주세요.";
+        }
+      }
 
+      button.disabled = false;
+    });
+  </script>
 </body>
 </html>
