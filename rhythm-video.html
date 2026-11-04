@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>박자게임 영상</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.videoBox {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-top: 20px;
+}
+.videoBox iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.backBtn {
+  display: block;
+  margin-top: 20px;
+  padding: 13px;
+  text-align: center;
+  background: #243b5a;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 id="videoTitle">박자게임</h1>
+
+  <div class="videoBox">
+    <iframe id="youtubeVideo"
+      title="박자게임 영상"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <a href="rhythm.html" class="backBtn">← 색상 선택으로 돌아가기</a>
+</div>
+
+<script>
+const videos = [
+  "pakknZh3eeo",
+  "dq96G8c1eZA",
+  "V80CDBj3Rsc",
+  "6gy_YUTDxeQ",
+  "-9E3jF-hZ1E"
+];
+
+const colors = ["빨강", "주황", "노랑", "초록", "파랑"];
+const number = Number(new URLSearchParams(location.search).get("video"));
+
+if (Number.isInteger(number) && number >= 0 && number < videos.length) {
+  document.getElementById("videoTitle").textContent =
+    colors[number] + " 박자게임";
+
+  document.getElementById("youtubeVideo").src =
+    "https://www.youtube.com/embed/" + videos[number] + "?autoplay=1&rel=0";
+} else {
+  document.getElementById("videoTitle").textContent = "영상을 선택해 주세요.";
+}
+</script>
+</body>
+</html>
