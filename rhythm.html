@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,17 +9,19 @@
 <link rel="stylesheet" href="style.css">
 <style>
 .rhythmButtons {
-  display: grid;
-  gap: 12px;
-  margin-top: 25px;
+  display: flex;
+  gap: 7px;
+  margin-top: 30px;
+  width: 100%;
 }
 .rhythmBtn {
-  width: 100%;
-  padding: 22px;
+  flex: 1;
+  min-width: 0;
+  padding: 20px 2px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   color: white;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -32,7 +35,7 @@
 <body>
 <div class="container">
   <h1>박자게임</h1>
-  <p>원하는 색상의 버튼을 선택하세요.</p>
+  <p>원하는 색상을 선택하세요.</p>
 
   <div class="rhythmButtons">
     <button class="rhythmBtn red" onclick="openVideo(0)">빨강</button>
