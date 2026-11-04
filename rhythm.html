@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>박자게임 | 서울미고 학생회+</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.rhythmButtons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 9px;
+  margin: 25px 0;
+}
+
+.rhythmBtn {
+  border: none;
+  border-radius: 10px;
+  height: 65px;
+  color: white;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.rhythmBtn:active {
+  transform: scale(0.93);
+  opacity: 0.8;
+}
+
+.red { background: #ef4444; }
+.orange { background: #f97316; }
+.yellow { background: #eab308; color: #222; }
+.green { background: #22a06b; }
+.blue { background: #3182ce; }
+
+.videoBox {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #111;
+  margin-top: 18px;
+  overflow: hidden;
+}
+
+.videoBox iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.videoGuide {
+  font-size: 13px;
+  color: var(--sub);
+  margin-top: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="topBar">
+    <a href="index.html">← 메인으로</a>
+  </div>
+
+  <h1>박자게임</h1>
+  <p>색깔 버튼을 눌러 영상을 재생하세요.</p>
+
+  <div class="rhythmButtons">
+    <button class="rhythmBtn red" data-video="pakknZh3eeo">빨강</button>
+    <button class="rhythmBtn orange" data-video="dq96G8c1eZA">주황</button>
+    <button class="rhythmBtn yellow" data-video="V80CDBj3Rsc">노랑</button>
+    <button class="rhythmBtn green" data-video="6gy_YUTDxeQ">초록</button>
+    <button class="rhythmBtn blue" data-video="-9E3jF-hZ1E">파랑</button>
+  </div>
+
+  <div class="videoBox">
+    <iframe
+      id="youtubePlayer"
+      src="https://www.youtube.com/embed/pakknZh3eeo"
+      title="박자게임 영상"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <p class="videoGuide" id="videoGuide">
+    빨강 버튼의 영상이 준비되어 있습니다. 다른 색을 누르면 영상이 바뀝니다.
+  </p>
+
+</div>
+
+<script>
+const buttons = document.querySelectorAll(".rhythmBtn");
+const player = document.getElementById("youtubePlayer");
+const guide = document.getElementById("videoGuide");
+
+const names = ["빨강", "주황", "노랑", "초록", "파랑"];
+
+buttons.forEach((button, index) => {
+  button.addEventListener("click", () => {
+    const videoId = button.dataset.video;
+
+    player.src =
+      "https://www.youtube.com/embed/" +
+      videoId +
+      "?autoplay=1&rel=0";
+
+    guide.textContent = names[index] + " 버튼의 영상을 재생합니다.";
+  });
+});
+</script>
+
+</body>
+</html>
