@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,24 +6,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>박자게임</title>
 <link rel="stylesheet" href="style.css">
+
 <style>
 .rhythmButtons {
   display: flex;
-  gap: 7px;
-  margin-top: 30px;
+  flex-direction: column;
+  gap: 14px;
   width: 100%;
+  margin-top: 30px;
 }
+
 .rhythmBtn {
-  flex: 1;
-  min-width: 0;
-  padding: 20px 2px;
+  width: 100%;
+  min-height: 85px;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   color: white;
-  font-size: 14px;
+  font-size: 23px;
   font-weight: bold;
   cursor: pointer;
 }
+
 .red { background: #ef4444; }
 .orange { background: #f97316; }
 .yellow { background: #eab308; color: #222; }
@@ -32,6 +34,7 @@
 .blue { background: #3b82f6; }
 </style>
 </head>
+
 <body>
 <div class="container">
   <h1>박자게임</h1>
